@@ -1,0 +1,1 @@
+export * from './create-contact-group-has-contact.dto'

@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model USERS {
+  uuid                       String                       @id @default(uuid()) @db.Uuid
+  name                       String                       @db.VarChar(50)
+  phone_number               String?                      @db.VarChar(16)
+  email                      String                       @unique @db.VarChar(60)
+  password                   String                       @db.VarChar(255)
+  photo                      String?                      @db.VarChar(255)
+  expired_at                 DateTime                     @db.Timestamp(0)
+  is_demo                    Boolean                      @default(true)
+  status                     USERS_status
+  created_at                 DateTime                     @default(now())
+  updated_at                 DateTime                     @updatedAt
+  DEVICES                    DEVICES[]
+  CONTACTS                   CONTACTS[]
+  CONTACT_GROUPS             CONTACT_GROUPS[]
+  CONTACT_GROUP_HAS_CONTACTS CONTACT_GROUP_HAS_CONTACTS[]
+  MESSAGE_LOGS               MESSAGE_LOGS[]
+  MESSAGE_SCHEDULES          MESSAGE_SCHEDULES[]
+}
+
+model CONTACTS {
+  uuid                       String                       @id @default(uuid()) @db.Uuid
+  user_uuid                  String                       @db.Uuid
+  name                       String                       @db.VarChar(50)
+  phone_number               String?                      @db.VarChar(16)
+  created_at                 DateTime                     @default(now())
+  updated_at                 DateTime                     @updatedAt
+  USERS                      USERS                        @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+  CONTACT_GROUP_HAS_CONTACTS CONTACT_GROUP_HAS_CONTACTS[]
+  MESSAGE_LOGS               MESSAGE_LOGS[]
+
+  @@index([user_uuid])
+}
+
+model CONTACT_GROUPS {
+  uuid                       String                       @id @default(uuid()) @db.Uuid
+  user_uuid                  String                       @db.Uuid
+  name                       String                       @db.VarChar(50)
+  created_at                 DateTime                     @default(now())
+  updated_at                 DateTime                     @updatedAt
+  USERS                      USERS                        @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+  CONTACT_GROUP_HAS_CONTACTS CONTACT_GROUP_HAS_CONTACTS[]
+  MESSAGE_SCHEDULES          MESSAGE_SCHEDULES[]
+
+  @@index([user_uuid])
+}
+
+model CONTACT_GROUP_HAS_CONTACTS {
+  uuid               String         @id @default(uuid()) @db.Uuid
+  user_uuid          String         @db.Uuid
+  contact_group_uuid String         @db.Uuid
+  contact_uuid       String         @db.Uuid
+  created_at         DateTime       @default(now())
+  updated_at         DateTime       @updatedAt
+  USERS              USERS          @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+  CONTACT_GROUPS     CONTACT_GROUPS @relation(fields: [contact_group_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+  CONTACTS           CONTACTS       @relation(fields: [contact_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+
+  @@index([user_uuid, contact_group_uuid, contact_uuid])
+}
+
+model DEVICES {
+  uuid         String         @id @default(uuid()) @db.Uuid
+  user_uuid    String         @db.Uuid
+  name         String         @db.VarChar(50)
+  session_id   String         @db.VarChar(50)
+  api_key      String         @db.VarChar(50)
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  USERS        USERS          @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+  MESSAGE_LOGS MESSAGE_LOGS[]
+
+  @@index([user_uuid])
+}
+
+model MESSAGE_LOGS {
+  uuid         String              @id @default(uuid()) @db.Uuid
+  user_uuid    String              @db.Uuid
+  device_uuid  String              @db.Uuid
+  contact_uuid String              @db.Uuid
+  message      String              @db.VarChar(50)
+  status       MESSAGE_LOGS_status
+  updated_at   DateTime            @updatedAt
+  USERS        USERS               @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+  DEVICES      DEVICES             @relation(fields: [device_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+  CONTACTS     CONTACTS            @relation(fields: [contact_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+
+  @@index([user_uuid, device_uuid, contact_uuid])
+}
+
+model MESSAGE_SCHEDULES {
+  uuid               String              @id @default(uuid()) @db.Uuid
+  user_uuid          String              @db.Uuid
+  contact_group_uuid String              @db.Uuid
+  message            String              @db.Text
+  schedule_hour      String              @db.VarChar(255)
+  status             MESSAGE_LOGS_status
+  updated_at         DateTime            @updatedAt
+  USERS              USERS               @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+  CONTACT_GROUPS     CONTACT_GROUPS      @relation(fields: [contact_group_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+
+  @@index([user_uuid, contact_group_uuid])
+}
+
+enum USERS_status {
+  admin
+  user
+}
+
+enum MESSAGE_LOGS_status {
+  pending
+  success
+  failed
+}
