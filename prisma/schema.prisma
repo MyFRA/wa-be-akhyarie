@@ -92,6 +92,7 @@ model MESSAGE_LOGS {
   contact_uuid String              @db.Uuid
   message      String              @db.VarChar(50)
   status       MESSAGE_LOGS_status
+  created_at   DateTime            @default(now())
   updated_at   DateTime            @updatedAt
   USERS        USERS               @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
   DEVICES      DEVICES             @relation(fields: [device_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
@@ -107,6 +108,7 @@ model MESSAGE_SCHEDULES {
   message            String              @db.Text
   schedule_hour      String              @db.VarChar(255)
   status             MESSAGE_LOGS_status
+  created_at         DateTime            @default(now())
   updated_at         DateTime            @updatedAt
   USERS              USERS               @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
   CONTACT_GROUPS     CONTACT_GROUPS      @relation(fields: [contact_group_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
