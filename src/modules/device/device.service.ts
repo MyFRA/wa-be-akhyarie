@@ -1,6 +1,7 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { Injectable } from '@nestjs/common';
 import { CreateDeviceDto, UpdateDeviceDto } from './dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { errorHandler } from 'src/utils/errorHandler/error-handler';
 import { WA_ENGINE } from '../../config';
 
 @Injectable()
@@ -12,13 +13,7 @@ export class DeviceService {
       return await this.getContent(createDeviceDto.name)
 
     } catch (error) {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: "Error! Please Contact Admin.",
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('Error! Please Contact Admin.')
     }
   }
 
@@ -36,13 +31,7 @@ export class DeviceService {
       return createDevice;
 
     } catch (error) {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: "Error! Please Contact Admin.",
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('Error! Please Contact Admin.')
     }
   }
 
@@ -61,13 +50,7 @@ export class DeviceService {
     const deviceInUpdate = await this.findOne(uuid);
 
     if (!deviceInUpdate) {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: 'Device failed to update! Record not found.',
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('Device failed to update! Record not found.')
     }
 
     try {
@@ -80,13 +63,7 @@ export class DeviceService {
 
       return updateDevice;
     } catch (error) {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: "Error! Please Contact Admin.",
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('Error! Please Contact Admin.')
     }
   }
 
@@ -94,26 +71,14 @@ export class DeviceService {
     const device = await this.findOne(uuid)
 
     if (!device) {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: 'Device failed to delete! Record not found.',
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('Device failed to delete! Record not found.')
     }
 
     try {
       return await this.prisma.dEVICES.delete({ where: { uuid } })
 
     } catch (error) {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: "Error! Please Contact Admin.",
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('Error! Please Contact Admin.')
     }
   }
 
@@ -126,13 +91,7 @@ export class DeviceService {
 
       return qrValue;
     } catch (error) {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: "Error! Please Contact Admin.",
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('Error! Please Contact Admin.')
     }
   }
 
@@ -143,13 +102,7 @@ export class DeviceService {
     if (match && match[1]) {
       return match[1];
     } else {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: "Error! Please Contact Admin.",
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('Error! Please Contact Admin.')
     }
   }
 }

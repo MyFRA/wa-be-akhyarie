@@ -1,6 +1,7 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateContactDto, UpdateContactDto } from './dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { errorHandler } from 'src/utils/errorHandler/error-handler';
 
 @Injectable()
 export class ContactService {
@@ -19,13 +20,7 @@ export class ContactService {
       return createContact;
 
     } catch (error) {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: "Error! Please Contact Admin.",
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('Error! Please Contact Admin.')
     }
   }
 
@@ -46,13 +41,7 @@ export class ContactService {
     const contactInUpdate = await this.findOne(uuid);
 
     if (!contactInUpdate) {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: 'Contact failed to update! Record not found.',
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('Contact failed to update! Record not found.')
     }
 
     try {
@@ -66,13 +55,8 @@ export class ContactService {
 
       return updateContact;
     } catch (error) {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: "Error! Please Contact Admin.",
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('Error! Please Contact Admin.')
+
     }
   }
 
@@ -80,25 +64,13 @@ export class ContactService {
     const contact = await this.findOne(uuid)
 
     if (!contact) {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: 'Contact failed to delete! Record not found.',
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('Contact failed to delete! Record not found.')
     }
 
     try {
       return await this.prisma.cONTACTS.delete({ where: { uuid } })
     } catch (error) {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: "Error! Please Contact Admin.",
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('Error! Please Contact Admin.')
     }
   }
 }

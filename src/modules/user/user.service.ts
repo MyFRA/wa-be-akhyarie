@@ -1,9 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { FILE_URL } from 'src/config';
 import { UpdateUserDto } from './dto';
 import { FileUploadHelper } from 'src/helpers/fileUploadHelper/file-upload.service';
+import { errorHandler } from 'src/utils/errorHandler/error-handler';
 
 @Injectable()
 export class UserService {
@@ -34,24 +35,12 @@ export class UserService {
     const userInUpdate = await this.findUserByUuid(uuid);
 
     if (!userInUpdate) {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: 'User failed to update! Record not found.',
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('User failed to update! Record not found.')
     }
 
     if (updateUserDto.password) {
       if (!('password_confirmation' in updateUserDto)) {
-        throw new HttpException(
-          {
-            code: HttpStatus.UNPROCESSABLE_ENTITY,
-            msg: 'Password confirmation is required.',
-          },
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        );
+        errorHandler('Password confirmation is required.')
       }
     }
 
@@ -60,13 +49,7 @@ export class UserService {
 
     if (user) {
       if (updateUserDto.email == user.email && userInUpdate.email !== updateUserDto.email) {
-        throw new HttpException(
-          {
-            code: HttpStatus.UNPROCESSABLE_ENTITY,
-            msg: 'Employee failed to update! Email already in use.',
-          },
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        );
+        errorHandler('User failed to update! Email already in use.')
       }
     }
 
@@ -86,13 +69,7 @@ export class UserService {
       return updateEmployee;
     } catch (error) {
       console.log(error)
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: "Error! Please Contact Admin.",
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('Error! Please Contact Admin.')
     }
   }
 
@@ -100,13 +77,7 @@ export class UserService {
     const user = await this.findUserByUuid(uuid)
 
     if (!user) {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: 'User failed to delete! Record not found.',
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('User failed to delete! Record not found.')
     }
 
     try {
@@ -116,13 +87,7 @@ export class UserService {
       return await this.prisma.uSERS.delete({ where: { uuid } })
 
     } catch (error) {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: "Error! Please Contact Admin.",
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('Error! Please Contact Admin.')
     }
   }
 

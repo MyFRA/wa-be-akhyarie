@@ -1,6 +1,7 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateContactGroupHasContactDto } from './dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { errorHandler } from 'src/utils/errorHandler/error-handler';
 
 @Injectable()
 export class ContactGroupHasContactService {
@@ -10,25 +11,13 @@ export class ContactGroupHasContactService {
     const contact = await this.findContact(createContactGroupHasContactDto.contact_uuid)
 
     if (!contact) {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: 'Contact not found!',
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('Contact not found!')
     }
 
     const contactGroup = await this.findContactGroup(createContactGroupHasContactDto.contact_group_uuid)
 
     if (!contactGroup) {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: 'Contact group not found!',
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('Contact group not found!')
     }
 
     try {
@@ -43,13 +32,7 @@ export class ContactGroupHasContactService {
       return createContactGroupHasContact;
 
     } catch (error) {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: "Error! Please Contact Admin.",
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('Error! Please Contact Admin.')
     }
   }
 
@@ -78,25 +61,13 @@ export class ContactGroupHasContactService {
     const contactGroupHasContact = await this.findOne(uuid)
 
     if (!contactGroupHasContact) {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: 'Contact failed to delete! Record not found in contact group.',
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('Contact failed to delete! Record not found in contact group.')
     }
 
     try {
       return await this.prisma.cONTACT_GROUP_HAS_CONTACTS.delete({ where: { uuid } })
     } catch (error) {
-      throw new HttpException(
-        {
-          code: HttpStatus.UNPROCESSABLE_ENTITY,
-          msg: "Error! Please Contact Admin.",
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      errorHandler('Error! Please Contact Admin.')
     }
   }
 }
