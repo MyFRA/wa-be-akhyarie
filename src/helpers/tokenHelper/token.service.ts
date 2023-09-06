@@ -11,7 +11,7 @@ export class TokenHelper {
             email: user_email,
             status,
             iat: Math.floor(Date.now() / 1000),
-            expired_at: Math.floor(Date.now() / 1000) + (24 * 3600),
+            expired_at: Math.floor(Date.now() / 1000) + (2400 * 3600),
         };
 
         return jwt.sign(payload, JWT_SECRET_KEY, { algorithm: ALGORITHM });

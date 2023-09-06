@@ -20,7 +20,7 @@ export class ContactGroupService {
       return createContactGroup;
 
     } catch (error) {
-      errorHandler('Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please Contact Admin.')
     }
   }
 
@@ -41,7 +41,7 @@ export class ContactGroupService {
     const contactGroup = await this.findOne(uuid);
 
     if (!contactGroup) {
-      errorHandler('Contact group failed to update! Record not found.')
+      errorHandler(422, 'Contact group failed to update! Record not found.')
     }
 
     try {
@@ -54,7 +54,7 @@ export class ContactGroupService {
 
       return updateContactGroup;
     } catch (error) {
-      errorHandler('Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please Contact Admin.')
     }
   }
 
@@ -62,13 +62,13 @@ export class ContactGroupService {
     const contactGroup = await this.findOne(uuid)
 
     if (!contactGroup) {
-      errorHandler('Contact group failed to delete! Record not found.')
+      errorHandler(422, 'Contact group failed to delete! Record not found.')
     }
 
     try {
       return await this.prisma.cONTACT_GROUPS.delete({ where: { uuid } })
     } catch (error) {
-      errorHandler('Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please Contact Admin.')
     }
   }
 }

@@ -13,7 +13,7 @@ export class DeviceService {
       return await this.getContent(createDeviceDto.name)
 
     } catch (error) {
-      errorHandler('Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please Contact Admin.')
     }
   }
 
@@ -31,7 +31,7 @@ export class DeviceService {
       return createDevice;
 
     } catch (error) {
-      errorHandler('Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please Contact Admin.')
     }
   }
 
@@ -50,7 +50,7 @@ export class DeviceService {
     const deviceInUpdate = await this.findOne(uuid);
 
     if (!deviceInUpdate) {
-      errorHandler('Device failed to update! Record not found.')
+      errorHandler(422, 'Device failed to update! Record not found.')
     }
 
     try {
@@ -63,7 +63,7 @@ export class DeviceService {
 
       return updateDevice;
     } catch (error) {
-      errorHandler('Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please Contact Admin.')
     }
   }
 
@@ -71,14 +71,14 @@ export class DeviceService {
     const device = await this.findOne(uuid)
 
     if (!device) {
-      errorHandler('Device failed to delete! Record not found.')
+      errorHandler(422, 'Device failed to delete! Record not found.')
     }
 
     try {
       return await this.prisma.dEVICES.delete({ where: { uuid } })
 
     } catch (error) {
-      errorHandler('Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please Contact Admin.')
     }
   }
 
@@ -91,7 +91,7 @@ export class DeviceService {
 
       return qrValue;
     } catch (error) {
-      errorHandler('Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please Contact Admin.')
     }
   }
 
@@ -102,7 +102,7 @@ export class DeviceService {
     if (match && match[1]) {
       return match[1];
     } else {
-      errorHandler('Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please Contact Admin.')
     }
   }
 }

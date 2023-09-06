@@ -30,23 +30,19 @@ export class AuthController {
         return res.status(200).json({
             code: 200,
             msg: 'You Have Successfully Login',
-            data: {
-                token
-            },
+            data: token
         });
     }
 
     @Get('user')
     async getCurrentUser(@Req() req: Request, @Res() res: Response) {
-        // Get Current User
-        const user = await this.authService.getCurrentUser(req);
+        const token = req.headers.authorization
+        const user = await this.authService.getCurrentUser(token);
 
         return res.status(200).json({
             code: 200,
             msg: 'Here is the User',
-            data: {
-                user: user
-            },
+            data: user
         });
     }
 }

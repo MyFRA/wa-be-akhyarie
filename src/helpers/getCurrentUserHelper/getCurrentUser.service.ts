@@ -1,6 +1,7 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { TokenHelper } from "../tokenHelper/token.service";
 import { FILE_URL } from "src/config";
+import { errorHandler } from "src/utils/errorHandler/error-handler";
 
 @Injectable()
 export class GetCurrentUserHelper {
@@ -8,26 +9,16 @@ export class GetCurrentUserHelper {
     async getCurrentUser(token: string, model: any) {
         try {
             const decodedToken = this.tokenHelper.decode(token.replace('Bearer ', ''));
-            const user_uuid = decodedToken.user_uuid;
+            const uuid = decodedToken.uuid;
 
-            const user = await model.findUnique({
-                where: {
-                    uuid: user_uuid
-                }
-            });
+            const user = await model.findUnique({ where: { uuid } });
 
             delete user["password"];
-            user["photo"] = user['photo'] ? FILE_URL + 'user/' + user['photo'] : null
+            user["photo"] = user['photo'] ? FILE_URL + 'USERS/photo/' + user['photo'] : null
 
             return user;
         } catch (error) {
-            throw new HttpException(
-                {
-                    code: HttpStatus.UNAUTHORIZED,
-                    msg: "Invalid Token",
-                },
-                HttpStatus.UNAUTHORIZED,
-            );
+            errorHandler(401, "Invalid token!")
         }
     }
 }

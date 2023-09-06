@@ -1,10 +1,10 @@
-import { HttpException, HttpStatus, Injectable, Req } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { LoginDto, RegistrationDto } from "./dto";
 import * as bcrypt from "bcrypt";
 import { TokenHelper } from "src/helpers/tokenHelper/token.service";
 import { GetCurrentUserHelper } from "src/helpers/getCurrentUserHelper/getCurrentUser.service";
-import { Request } from "express";
+import { errorHandler } from "src/utils/errorHandler/error-handler";
 
 @Injectable()
 export class AuthService {
@@ -15,13 +15,7 @@ export class AuthService {
         const user_email = await this.findUserByEmail(registrationDto.email);
 
         if (user_email) {
-            throw new HttpException(
-                {
-                    code: HttpStatus.UNPROCESSABLE_ENTITY,
-                    msg: 'You Failed to Register! Email already in use.',
-                },
-                HttpStatus.UNPROCESSABLE_ENTITY,
-            );
+            errorHandler(422, "You Failed to Register! Email already in use.")
         }
 
         try {
@@ -38,13 +32,7 @@ export class AuthService {
             return createUser;
 
         } catch (error) {
-            throw new HttpException(
-                {
-                    code: HttpStatus.UNPROCESSABLE_ENTITY,
-                    msg: "Error! Please Contact Admin.",
-                },
-                HttpStatus.UNPROCESSABLE_ENTITY,
-            );
+            errorHandler(422, "Error! Please Contact Admin.")
         }
     }
 
@@ -55,14 +43,9 @@ export class AuthService {
             await this.findUserByEmail(loginDto.email);
 
         // if user does not exist throw exception
-        if (!user)
-            throw new HttpException(
-                {
-                    code: HttpStatus.UNPROCESSABLE_ENTITY,
-                    msg: 'Email or Password is Wrong',
-                },
-                HttpStatus.UNPROCESSABLE_ENTITY,
-            );
+        if (!user) {
+            errorHandler(422, "Email or password is wrong.")
+        }
 
         // compare password
         const pwMatches = await bcrypt.compare(
@@ -71,37 +54,24 @@ export class AuthService {
         );
 
         // if password incorrect throw exception
-        if (!pwMatches)
-            throw new HttpException(
-                {
-                    code: HttpStatus.UNPROCESSABLE_ENTITY,
-                    msg: 'Email or Password is Wrong',
-                },
-                HttpStatus.UNPROCESSABLE_ENTITY,
-            );
-
+        if (!pwMatches) {
+            errorHandler(422, "Email or password is wrong.")
+        }
         // Generate Token
         const token = this.tokenHelper.encode(user.uuid, user.email, user.name, user.status);
 
         return token;
     }
 
-    async getCurrentUser(@Req() req: Request) {
+    async getCurrentUser(token: string) {
         try {
             // Get Current User
-            const user = await this.getCurrentUserHelper.getCurrentUser(req.headers.authorization, this.prisma.uSERS);
+            const user = await this.getCurrentUserHelper.getCurrentUser(token, this.prisma.uSERS);
 
             return user;
 
         } catch (error) {
-            console.log(error)
-            throw new HttpException(
-                {
-                    code: HttpStatus.UNAUTHORIZED,
-                    msg: 'Invalid Token',
-                },
-                HttpStatus.UNAUTHORIZED,
-            );
+            errorHandler(401, "Invalid Token!")
         }
     }
 

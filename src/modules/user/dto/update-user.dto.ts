@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength, ValidationArguments, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface, registerDecorator } from "class-validator";
+import { IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber, IsString, Matches, MinLength, ValidationArguments, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface, registerDecorator } from "class-validator";
 import { FileSystemStoredFile, HasMimeType, IsFile, MaxFileSize } from "nestjs-form-data";
 
 @ValidatorConstraint({ name: 'passwordMatch', async: false })
@@ -50,6 +50,11 @@ export class UpdateUserDto {
     @IsString()
     @ValidatePasswordConfirmation()
     password_confirmation?: string;
+
+    @IsNotEmpty({ message: 'Phone number is required' })
+    @Matches(/^\+62\d{9,13}$/, { message: 'Phone number must start with "+62", minimum 9 digits and maximum 13 digits.' })
+    @IsPhoneNumber('ID', { message: 'Invalid phone number format' })
+    phone_number: string;
 
     @IsOptional()
     @IsFile()

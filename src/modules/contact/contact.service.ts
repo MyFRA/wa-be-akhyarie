@@ -20,7 +20,7 @@ export class ContactService {
       return createContact;
 
     } catch (error) {
-      errorHandler('Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please Contact Admin.')
     }
   }
 
@@ -41,7 +41,7 @@ export class ContactService {
     const contactInUpdate = await this.findOne(uuid);
 
     if (!contactInUpdate) {
-      errorHandler('Contact failed to update! Record not found.')
+      errorHandler(422, 'Contact failed to update! Record not found.')
     }
 
     try {
@@ -55,7 +55,7 @@ export class ContactService {
 
       return updateContact;
     } catch (error) {
-      errorHandler('Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please Contact Admin.')
 
     }
   }
@@ -64,13 +64,13 @@ export class ContactService {
     const contact = await this.findOne(uuid)
 
     if (!contact) {
-      errorHandler('Contact failed to delete! Record not found.')
+      errorHandler(422, 'Contact failed to delete! Record not found.')
     }
 
     try {
       return await this.prisma.cONTACTS.delete({ where: { uuid } })
     } catch (error) {
-      errorHandler('Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please Contact Admin.')
     }
   }
 }

@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 
-export function errorHandler(message: string) {
+export function errorHandler(statusCode: number, message: string) {
     throw new HttpException(
         {
-            code: HttpStatus.UNPROCESSABLE_ENTITY,
+            code: statusCode,
             msg: message,
         },
-        HttpStatus.UNPROCESSABLE_ENTITY,
+        statusCode,
     );
 }

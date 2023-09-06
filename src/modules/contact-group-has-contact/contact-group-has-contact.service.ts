@@ -11,13 +11,13 @@ export class ContactGroupHasContactService {
     const contact = await this.findContact(createContactGroupHasContactDto.contact_uuid)
 
     if (!contact) {
-      errorHandler('Contact not found!')
+      errorHandler(422, 'Contact not found!')
     }
 
     const contactGroup = await this.findContactGroup(createContactGroupHasContactDto.contact_group_uuid)
 
     if (!contactGroup) {
-      errorHandler('Contact group not found!')
+      errorHandler(422, 'Contact group not found!')
     }
 
     try {
@@ -32,7 +32,7 @@ export class ContactGroupHasContactService {
       return createContactGroupHasContact;
 
     } catch (error) {
-      errorHandler('Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please Contact Admin.')
     }
   }
 
@@ -61,13 +61,13 @@ export class ContactGroupHasContactService {
     const contactGroupHasContact = await this.findOne(uuid)
 
     if (!contactGroupHasContact) {
-      errorHandler('Contact failed to delete! Record not found in contact group.')
+      errorHandler(422, 'Contact failed to delete! Record not found in contact group.')
     }
 
     try {
       return await this.prisma.cONTACT_GROUP_HAS_CONTACTS.delete({ where: { uuid } })
     } catch (error) {
-      errorHandler('Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please Contact Admin.')
     }
   }
 }

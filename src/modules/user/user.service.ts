@@ -35,12 +35,12 @@ export class UserService {
     const userInUpdate = await this.findUserByUuid(uuid);
 
     if (!userInUpdate) {
-      errorHandler('User failed to update! Record not found.')
+      errorHandler(422, 'User failed to update! Record not found.')
     }
 
     if (updateUserDto.password) {
       if (!('password_confirmation' in updateUserDto)) {
-        errorHandler('Password confirmation is required.')
+        errorHandler(422, 'Password confirmation is required.')
       }
     }
 
@@ -49,7 +49,7 @@ export class UserService {
 
     if (user) {
       if (updateUserDto.email == user.email && userInUpdate.email !== updateUserDto.email) {
-        errorHandler('User failed to update! Email already in use.')
+        errorHandler(422, 'User failed to update! Email already in use.')
       }
     }
 
@@ -62,6 +62,7 @@ export class UserService {
           name: updateUserDto.name,
           email: updateUserDto.email,
           password: updateUserDto.password ? await bcrypt.hash(updateUserDto.password, 10) : userInUpdate.password,
+          phone_number: updateUserDto.phone_number,
           photo: fileName,
         },
       });
@@ -69,7 +70,7 @@ export class UserService {
       return updateEmployee;
     } catch (error) {
       console.log(error)
-      errorHandler('Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please Contact Admin.')
     }
   }
 
@@ -77,7 +78,7 @@ export class UserService {
     const user = await this.findUserByUuid(uuid)
 
     if (!user) {
-      errorHandler('User failed to delete! Record not found.')
+      errorHandler(422, 'User failed to delete! Record not found.')
     }
 
     try {
@@ -87,7 +88,7 @@ export class UserService {
       return await this.prisma.uSERS.delete({ where: { uuid } })
 
     } catch (error) {
-      errorHandler('Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please Contact Admin.')
     }
   }
 
