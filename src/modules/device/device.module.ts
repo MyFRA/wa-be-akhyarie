@@ -3,12 +3,11 @@ import { DeviceService } from './device.service';
 import { DeviceController } from './device.controller';
 import { AuthMiddleware } from 'src/middleware';
 import { NestjsFormDataModule } from 'nestjs-form-data';
-import { HttpModule } from '@nestjs/axios';
 
 @Module({
   controllers: [DeviceController],
   providers: [DeviceService],
-  imports: [NestjsFormDataModule, HttpModule],
+  imports: [NestjsFormDataModule],
 })
 export class DeviceModule implements NestModule {
   public configure(consumer: MiddlewareConsumer) {

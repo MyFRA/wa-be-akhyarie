@@ -1,32 +1,35 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateDeviceDto, UpdateDeviceDto } from './dto';
-import { HttpService } from '@nestjs/axios';
 import { WA_ENGINE } from '../../config';
 
 @Injectable()
 export class DeviceService {
-  constructor(private prisma: PrismaService, private httpService: HttpService) { }
+  constructor(private prisma: PrismaService) { }
 
-
-
-  async create(createDeviceDto: CreateDeviceDto, user_uuid: string) {
+  async create(createDeviceDto: CreateDeviceDto) {
     try {
-      const headersRequest = {
-        'Content-Type': 'application/json', // afaik this one is not needed
-      };
+      return await this.getContent(createDeviceDto.name)
 
-      const result = this.httpService.get(WA_ENGINE + `start-session?session=${createDeviceDto.name}&scan=true`, { headers: headersRequest });
+    } catch (error) {
+      throw new HttpException(
+        {
+          code: HttpStatus.UNPROCESSABLE_ENTITY,
+          msg: "Error! Please Contact Admin.",
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+  }
 
-      console.log(WA_ENGINE + `start-session?session=${createDeviceDto.name}&scan=true`)
-      console.log(result)
-
+  async inputDevice(createDeviceDto: CreateDeviceDto, user_uuid: string) {
+    try {
       const createDevice = await this.prisma.dEVICES.create({
         data: {
           user_uuid: user_uuid,
           name: createDeviceDto.name,
-          session_id: 'sess_id',
-          api_key: 'key',
+          session_id: createDeviceDto.session_id,
+          api_key: createDeviceDto.api_key,
         }
       });
 
@@ -44,12 +47,10 @@ export class DeviceService {
   }
 
   async findAll(user_uuid: string) {
-    const devices = await this.prisma.dEVICES.findMany({
+    return await this.prisma.dEVICES.findMany({
       where: { user_uuid },
       orderBy: [{ name: 'asc' }]
     })
-
-    return devices
   }
 
   async findOne(uuid: string) {
@@ -106,6 +107,42 @@ export class DeviceService {
       return await this.prisma.dEVICES.delete({ where: { uuid } })
 
     } catch (error) {
+      throw new HttpException(
+        {
+          code: HttpStatus.UNPROCESSABLE_ENTITY,
+          msg: "Error! Please Contact Admin.",
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+  }
+
+  async getContent(name: string): Promise<string> {
+    try {
+      const result = await fetch(`${WA_ENGINE}start-session?session=${name}&scan=true`);
+      const htmlText = await result.text();
+
+      const qrValue = this.parseQRValueFromHTML(htmlText);
+
+      return qrValue;
+    } catch (error) {
+      throw new HttpException(
+        {
+          code: HttpStatus.UNPROCESSABLE_ENTITY,
+          msg: "Error! Please Contact Admin.",
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+  }
+
+  private parseQRValueFromHTML(htmlText: string) {
+    const regex = /let qr = '([^']+)'/;
+    const match = htmlText.match(regex);
+
+    if (match && match[1]) {
+      return match[1];
+    } else {
       throw new HttpException(
         {
           code: HttpStatus.UNPROCESSABLE_ENTITY,

@@ -12,10 +12,22 @@ export class DeviceController {
 
   @Post()
   @FormDataRequest()
-  async create(@Body() createDeviceDto: CreateDeviceDto, @Res() res: Response, @Req() req: Request) {
+  async create(@Body() createDeviceDto: CreateDeviceDto, @Res() res: Response) {
+    const createdDevice = await this.deviceService.create(createDeviceDto);
+
+    return res.status(200).json({
+      code: 200,
+      msg: `Here is the QR Code.`,
+      data: createdDevice
+    });
+  }
+
+  @Post('input')
+  @FormDataRequest()
+  async inputDevice(@Body() createDeviceDto: CreateDeviceDto, @Res() res: Response, @Req() req: Request) {
     const user = this.tokenHelper.decode(req.headers.authorization.replace('Bearer ', ''))
 
-    const createdDevice = await this.deviceService.create(createDeviceDto, user.uuid);
+    const createdDevice = await this.deviceService.inputDevice(createDeviceDto, user.uuid);
 
     return res.status(200).json({
       code: 200,
