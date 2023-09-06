@@ -4,6 +4,7 @@
 /storage
 /prisma/migrations/*
 .env
+/src/config.ts
 
 # Logs
 logs

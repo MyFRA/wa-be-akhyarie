@@ -1,0 +1,6 @@
+export const JWT_SECRET_KEY = 'JWT_SECRET_KEY';
+export const ALGORITHM = 'HS256';
+export const FILE_URL = 'FILE URL STORAGE';
+export const FILE_PATH = 'FILE PATH TO STORAGE';
+export const KEY = 'KEY';
+export const WA_ENGINE = 'https://wa-engine.matursoft.com/'
