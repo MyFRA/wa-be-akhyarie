@@ -65,7 +65,7 @@ export class ContactGroupController {
 
     return res.status(200).json({
       code: 200,
-      msg: `Device ${deletedContactGroup.name} successfully updated.`,
+      msg: `Device ${deletedContactGroup.name} successfully deleted.`,
     });
   }
 }

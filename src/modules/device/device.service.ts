@@ -31,6 +31,7 @@ export class DeviceService {
       return createDevice;
 
     } catch (error) {
+      console.log(error)
       errorHandler(422, 'Error! Please Contact Admin.')
     }
   }

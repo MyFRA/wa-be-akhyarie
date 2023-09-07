@@ -1,13 +1,15 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsPhoneNumber, IsString, Matches } from "class-validator";
 
 export class CreateDeviceDto {
     @IsNotEmpty()
     @IsString()
     name: string;
 
+    @IsNotEmpty()
     @IsString()
-    session_id?: string;
+    session_id: string;
 
+    @IsNotEmpty()
     @IsString()
-    api_key?: string;
+    api_key: string;
 }
