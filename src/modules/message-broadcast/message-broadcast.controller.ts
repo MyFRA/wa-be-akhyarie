@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Res } from '@nestjs/common';
 import { MessageBroadcastService } from './message-broadcast.service';
-import { TextMessageBroadcastDto } from './dto';
-import { FormDataRequest } from 'nestjs-form-data';
+import { AudioMessageBroadcastDto, DocumentMessageBroadcastDto, TextMessageBroadcastDto } from './dto';
+import { FileSystemStoredFile, FormDataRequest } from 'nestjs-form-data';
 import { Response } from 'express';
 
 @Controller('api/send-broadcast-messages')
@@ -16,6 +16,28 @@ export class MessageBroadcastController {
     return res.status(200).json({
       code: 200,
       msg: `Broadcast Message ${data.data[0].text} successfully sent to group ${contactGroup.name}.`,
+    });
+  }
+
+  @Post('audio')
+  @FormDataRequest({ storage: FileSystemStoredFile })
+  async sendAudio(@Body() audioMessageBroadcastDto: AudioMessageBroadcastDto, @Res() res: Response) {
+    const contactGroup = await this.messageBroadcastService.sendAudio(audioMessageBroadcastDto);
+
+    return res.status(200).json({
+      code: 200,
+      msg: `Broadcast Message with audio successfully sent to group ${contactGroup.name}.`,
+    });
+  }
+
+  @Post('document')
+  @FormDataRequest({ storage: FileSystemStoredFile })
+  async sendDocument(@Body() documentMessageBroadcastDto: DocumentMessageBroadcastDto, @Res() res: Response) {
+    const contactGroup = await this.messageBroadcastService.sendDocument(documentMessageBroadcastDto);
+
+    return res.status(200).json({
+      code: 200,
+      msg: `Broadcast Message with document successfully sent to group ${contactGroup.name}.`,
     });
   }
 }

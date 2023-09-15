@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsString, IsUUID } from "class-validator";
 import { FileSystemStoredFile, HasMimeType, IsFile, MaxFileSize } from "nestjs-form-data";
 
-export class FileMessageBroadcastDto {
+export class ImageMessageBroadcastDto {
     @IsNotEmpty()
     @IsUUID('all')
     device_uuid: string;

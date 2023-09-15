@@ -83,8 +83,6 @@ export class MessageService {
     try {
       const url = `${WA_ENGINE}send-message-audio`;
 
-      console.log(audioMessageDto.audio)
-
       const formData = new FormData();
 
       formData.append('session', device.name);
