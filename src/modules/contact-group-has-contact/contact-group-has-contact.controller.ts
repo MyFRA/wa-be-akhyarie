@@ -2,9 +2,9 @@ import { Controller, Get, Post, Body, Delete, Req, Res } from '@nestjs/common';
 import { FormDataRequest } from 'nestjs-form-data';
 import { ContactGroupHasContactService } from './contact-group-has-contact.service';
 import { CreateContactGroupHasContactDto } from './dto';
-import { TokenHelper } from 'src/helpers/tokenHelper/token.service';
+import { TokenHelper } from 'src/helpers/token-helper/token.service';
 import { Request, Response } from 'express';
-import { UUIDParam } from 'src/helpers/UuidHelper';
+import { UUIDParam } from 'src/helpers/uuid-helper';
 
 @Controller('api/contact-group-has-contacts')
 export class ContactGroupHasContactController {

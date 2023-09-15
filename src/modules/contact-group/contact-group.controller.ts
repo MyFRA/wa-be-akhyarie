@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Delete, Res, Req } from '@nestjs/common';
 import { ContactGroupService } from './contact-group.service';
 import { CreateContactGroupDto, UpdateContactGroupDto } from './dto';
-import { UUIDParam } from 'src/helpers/UuidHelper';
-import { TokenHelper } from 'src/helpers/tokenHelper/token.service';
+import { UUIDParam } from 'src/helpers/uuid-helper';
+import { TokenHelper } from 'src/helpers/token-helper/token.service';
 import { Request, Response } from 'express';
 import { FormDataRequest } from 'nestjs-form-data';
 

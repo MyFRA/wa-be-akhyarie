@@ -3,8 +3,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { FILE_URL } from 'src/config';
 import { UpdateUserDto } from './dto';
-import { FileUploadHelper } from 'src/helpers/fileUploadHelper/file-upload.service';
-import { errorHandler } from 'src/utils/errorHandler/error-handler';
+import { FileUploadHelper } from 'src/helpers/file-upload-helper/file-upload.service';
+import { errorHandler } from 'src/utils/error-handler/error-handler';
 
 @Injectable()
 export class UserService {
@@ -70,7 +70,7 @@ export class UserService {
       return updateEmployee;
     } catch (error) {
       console.log(error)
-      errorHandler(422, 'Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please contact the administrator.')
     }
   }
 
@@ -88,7 +88,7 @@ export class UserService {
       return await this.prisma.uSERS.delete({ where: { uuid } })
 
     } catch (error) {
-      errorHandler(422, 'Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please contact the administrator.')
     }
   }
 

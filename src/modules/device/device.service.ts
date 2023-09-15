@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDeviceDto, UpdateDeviceDto } from './dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { errorHandler } from 'src/utils/errorHandler/error-handler';
+import { errorHandler } from 'src/utils/error-handler/error-handler';
 import { WA_ENGINE } from '../../config';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class DeviceService {
       return await this.getContent(createDeviceDto.name)
 
     } catch (error) {
-      errorHandler(422, 'Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please contact the administrator.')
     }
   }
 
@@ -32,7 +32,7 @@ export class DeviceService {
 
     } catch (error) {
       console.log(error)
-      errorHandler(422, 'Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please contact the administrator.')
     }
   }
 
@@ -64,7 +64,7 @@ export class DeviceService {
 
       return updateDevice;
     } catch (error) {
-      errorHandler(422, 'Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please contact the administrator.')
     }
   }
 
@@ -79,7 +79,7 @@ export class DeviceService {
       return await this.prisma.dEVICES.delete({ where: { uuid } })
 
     } catch (error) {
-      errorHandler(422, 'Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please contact the administrator.')
     }
   }
 
@@ -92,7 +92,7 @@ export class DeviceService {
 
       return qrValue;
     } catch (error) {
-      errorHandler(422, 'Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please contact the administrator.')
     }
   }
 
@@ -103,7 +103,7 @@ export class DeviceService {
     if (match && match[1]) {
       return match[1];
     } else {
-      errorHandler(422, 'Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please contact the administrator.')
     }
   }
 }

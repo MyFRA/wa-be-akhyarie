@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { TokenHelper } from 'src/helpers/tokenHelper/token.service';
+import { TokenHelper } from 'src/helpers/token-helper/token.service';
 
 @Injectable()
 export class AuthUserMiddleware implements NestMiddleware {

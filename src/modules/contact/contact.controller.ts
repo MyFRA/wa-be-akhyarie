@@ -1,9 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Delete, Req, Res } from '@nestjs/common';
 import { ContactService } from './contact.service';
 import { CreateContactDto, UpdateContactDto } from './dto';
-import { TokenHelper } from 'src/helpers/tokenHelper/token.service';
+import { TokenHelper } from 'src/helpers/token-helper/token.service';
 import { Request, Response } from 'express';
-import { UUIDParam } from 'src/helpers/UuidHelper';
+import { UUIDParam } from 'src/helpers/uuid-helper';
 import { FormDataRequest } from 'nestjs-form-data';
 
 @Controller('api/contacts')

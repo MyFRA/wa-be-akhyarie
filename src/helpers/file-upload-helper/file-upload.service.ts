@@ -6,6 +6,22 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class FileUploadHelper {
+    async modelFileStore(table: string, column: string, uploadedFile: FileSystemStoredFile | null, visibility: string = 'storage'): Promise<string | null> {
+        if (!uploadedFile) {
+            return null;
+        }
+
+        const baseDirectory = `${visibility}/${table.replace('_', '-')}/${column.replace('_', '-')}`;
+
+        const fileName = `${column.replace('_', '-')}-${randomstring.generate(10)}.${uploadedFile.originalName.split('.').pop()}`;
+
+        const newFilePath = join(baseDirectory, fileName);
+        console.log(uploadedFile.path)
+        await fs.copyFile(uploadedFile.path, newFilePath);
+
+        return fileName;
+    }
+
     async modelFileUpdate(model: any, table: string, column: string, uploadedFile: FileSystemStoredFile | null, visibility: string = 'storage'): Promise<string | null> {
         if (!uploadedFile) {
             return model[column];
@@ -25,21 +41,6 @@ export class FileUploadHelper {
 
         const newFilePath = join(baseDirectory, fileName);
         await fs.mkdir(baseDirectory, { recursive: true })
-        await fs.copyFile(uploadedFile.path, newFilePath);
-
-        return fileName;
-    }
-
-    async modelFileStore(table: string, column: string, uploadedFile: FileSystemStoredFile | null, visibility: string = 'storage'): Promise<string | null> {
-        if (!uploadedFile) {
-            return null;
-        }
-
-        const baseDirectory = `${visibility}/${table.replace('_', '-')}/${column.replace('_', '-')}`;
-
-        const fileName = `${column.replace('_', '-')}-${randomstring.generate(10)}.${uploadedFile.originalName.split('.').pop()}`;
-
-        const newFilePath = join(baseDirectory, fileName);
         await fs.copyFile(uploadedFile.path, newFilePath);
 
         return fileName;

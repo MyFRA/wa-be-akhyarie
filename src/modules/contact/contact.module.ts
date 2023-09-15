@@ -8,6 +8,7 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
   controllers: [ContactController],
   providers: [ContactService],
   imports: [NestjsFormDataModule],
+  exports: [ContactService],
 })
 export class ContactModule implements NestModule {
   public configure(consumer: MiddlewareConsumer) {

@@ -2,9 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { LoginDto, RegistrationDto } from "./dto";
 import * as bcrypt from "bcrypt";
-import { TokenHelper } from "src/helpers/tokenHelper/token.service";
-import { GetCurrentUserHelper } from "src/helpers/getCurrentUserHelper/getCurrentUser.service";
-import { errorHandler } from "src/utils/errorHandler/error-handler";
+import { TokenHelper } from "src/helpers/token-helper/token.service";
+import { errorHandler } from "src/utils/error-handler/error-handler";
+import { GetCurrentUserHelper } from "src/helpers/get-current-user-helper/get-current-user.service";
 
 @Injectable()
 export class AuthService {
@@ -32,7 +32,7 @@ export class AuthService {
             return createUser;
 
         } catch (error) {
-            errorHandler(422, "Error! Please Contact Admin.")
+            errorHandler(422, 'Error! Please contact the administrator.')
         }
     }
 

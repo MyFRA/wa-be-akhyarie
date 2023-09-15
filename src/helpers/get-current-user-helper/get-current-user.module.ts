@@ -1,5 +1,5 @@
 import { Global, Module } from '@nestjs/common';
-import { GetCurrentUserHelper } from './getCurrentUser.service';
+import { GetCurrentUserHelper } from './get-current-user.service';
 
 @Global()
 @Module({

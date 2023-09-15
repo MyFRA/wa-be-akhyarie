@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateContactGroupHasContactDto } from './dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { errorHandler } from 'src/utils/errorHandler/error-handler';
+import { errorHandler } from 'src/utils/error-handler/error-handler';
 
 @Injectable()
 export class ContactGroupHasContactService {
@@ -20,6 +20,12 @@ export class ContactGroupHasContactService {
       errorHandler(422, 'Contact group not found!')
     }
 
+    const contactInContactGroup = await this.findContactInContactGroup(createContactGroupHasContactDto.contact_group_uuid, createContactGroupHasContactDto.contact_uuid)
+
+    if (contactInContactGroup) {
+      errorHandler(422, 'Contact is already in the group!')
+    }
+
     try {
       const createContactGroupHasContact = await this.prisma.cONTACT_GROUP_HAS_CONTACTS.create({
         data: {
@@ -32,7 +38,7 @@ export class ContactGroupHasContactService {
       return createContactGroupHasContact;
 
     } catch (error) {
-      errorHandler(422, 'Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please contact the administrator.')
     }
   }
 
@@ -57,6 +63,14 @@ export class ContactGroupHasContactService {
     return await this.prisma.cONTACT_GROUPS.findUnique({ where: { uuid } })
   }
 
+  async findContactGroupInContactGroupHasContact(contact_group_uuid: string) {
+    return await this.prisma.cONTACT_GROUP_HAS_CONTACTS.findMany({ where: { contact_group_uuid } })
+  }
+
+  async findContactInContactGroup(contact_group_uuid: string, contact_uuid: string) {
+    return await this.prisma.cONTACT_GROUP_HAS_CONTACTS.findFirst({ where: { contact_group_uuid, contact_uuid } })
+  }
+
   async remove(uuid: string) {
     const contactGroupHasContact = await this.findOne(uuid)
 
@@ -67,7 +81,7 @@ export class ContactGroupHasContactService {
     try {
       return await this.prisma.cONTACT_GROUP_HAS_CONTACTS.delete({ where: { uuid } })
     } catch (error) {
-      errorHandler(422, 'Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please contact the administrator.')
     }
   }
 }

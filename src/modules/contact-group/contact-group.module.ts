@@ -8,6 +8,7 @@ import { AuthMiddleware } from 'src/middleware';
   controllers: [ContactGroupController],
   providers: [ContactGroupService],
   imports: [NestjsFormDataModule],
+  exports: [ContactGroupService],
 })
 export class ContactGroupModule implements NestModule {
   public configure(consumer: MiddlewareConsumer) {

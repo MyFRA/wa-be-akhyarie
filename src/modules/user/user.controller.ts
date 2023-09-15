@@ -3,8 +3,8 @@ import { UserService } from './user.service';
 import { UpdateUserDto } from './dto';
 import { FileSystemStoredFile, FormDataRequest } from 'nestjs-form-data';
 import { Request, Response } from 'express';
-import { TokenHelper } from 'src/helpers/tokenHelper/token.service';
-import { UUIDParam } from 'src/helpers/UuidHelper';
+import { TokenHelper } from 'src/helpers/token-helper/token.service';
+import { UUIDParam } from 'src/helpers/uuid-helper';
 
 @Controller('api/users')
 export class UserController {

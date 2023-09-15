@@ -8,6 +8,7 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
   controllers: [DeviceController],
   providers: [DeviceService],
   imports: [NestjsFormDataModule],
+  exports: [DeviceService],
 })
 export class DeviceModule implements NestModule {
   public configure(consumer: MiddlewareConsumer) {

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { TokenHelper } from "../tokenHelper/token.service";
+import { TokenHelper } from "../token-helper/token.service";
 import { FILE_URL } from "src/config";
-import { errorHandler } from "src/utils/errorHandler/error-handler";
+import { errorHandler } from "src/utils/error-handler/error-handler";
 
 @Injectable()
 export class GetCurrentUserHelper {

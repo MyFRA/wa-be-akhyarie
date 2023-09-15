@@ -1,6 +1,6 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 
-export function errorHandler(statusCode: number, message: string) {
+export function errorHandler(statusCode: number, message: any) {
     throw new HttpException(
         {
             code: statusCode,

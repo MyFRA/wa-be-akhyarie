@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateContactDto, UpdateContactDto } from './dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { errorHandler } from 'src/utils/errorHandler/error-handler';
+import { errorHandler } from 'src/utils/error-handler/error-handler';
 
 @Injectable()
 export class ContactService {
@@ -20,7 +20,7 @@ export class ContactService {
       return createContact;
 
     } catch (error) {
-      errorHandler(422, 'Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please contact the administrator.')
     }
   }
 
@@ -55,7 +55,7 @@ export class ContactService {
 
       return updateContact;
     } catch (error) {
-      errorHandler(422, 'Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please contact the administrator.')
 
     }
   }
@@ -70,7 +70,7 @@ export class ContactService {
     try {
       return await this.prisma.cONTACTS.delete({ where: { uuid } })
     } catch (error) {
-      errorHandler(422, 'Error! Please Contact Admin.')
+      errorHandler(422, 'Error! Please contact the administrator.')
     }
   }
 }
