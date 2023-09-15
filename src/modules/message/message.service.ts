@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DocumentMessageDto, ImageMessageDto, TextMessageDto, VideoMessageDto } from './dto';
+import { AudioMessageDto, DocumentMessageDto, ImageMessageDto, TextMessageDto, VideoMessageDto } from './dto';
 import { errorHandler } from 'src/utils/error-handler/error-handler';
 import { validatorHelper } from 'src/helpers/validator-helper/validator.service';
 import { WA_ENGINE } from 'src/config';
@@ -59,6 +59,57 @@ export class MessageService {
     } catch (error) {
       console.log(error)
       errorHandler(422, error.response.data.message)
+    }
+  }
+
+  async sendAudio(audioMessageDto: AudioMessageDto) {
+    // Validate device is existing
+    const device = await this.validatorHelper.validateDevice(audioMessageDto.device_uuid);
+    if (!device) {
+      errorHandler(422, 'Device not found! Failed to send audio message.')
+    }
+
+    // Validate contact is existing
+    const contact = await this.validatorHelper.validateContact(audioMessageDto.contact_uuid);
+    if (!contact) {
+      errorHandler(422, 'Contact not found! Failed to send audio message.')
+    }
+
+    // Validate contact has phone number
+    if (!contact.phone_number) {
+      errorHandler(422, `Contact doesn't have phone number! Failed to send audio message.`)
+    }
+
+    try {
+      const url = `${WA_ENGINE}send-message-audio`;
+
+      console.log(audioMessageDto.audio)
+
+      const formData = new FormData();
+
+      formData.append('session', device.name);
+      formData.append('to', contact.phone_number);
+      formData.append('audio', fs.createReadStream(audioMessageDto.audio.path));
+
+      const requestConfig: AxiosRequestConfig = {
+        headers: {
+          ...formData.getHeaders(),
+        }
+      };
+
+      const responseData = await lastValueFrom(
+        this.httpService.post(url, formData, requestConfig).pipe(
+          map((response) => {
+            console.log(response.data)
+            return response.data;
+          }),
+        ),
+      );
+
+      return contact.name;
+    } catch (error) {
+      console.log(error)
+      errorHandler(422, 'Error! Please contact the administrator.')
     }
   }
 

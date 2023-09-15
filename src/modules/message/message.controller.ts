@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Res } from '@nestjs/common';
 import { MessageService } from './message.service';
-import { DocumentMessageDto, ImageMessageDto, TextMessageDto, VideoMessageDto } from './dto';
+import { AudioMessageDto, DocumentMessageDto, ImageMessageDto, TextMessageDto, VideoMessageDto } from './dto';
 import { FileSystemStoredFile, FormDataRequest } from 'nestjs-form-data';
 import { Response } from 'express';
 
@@ -49,6 +49,17 @@ export class MessageController {
     return res.status(200).json({
       code: 200,
       msg: `Message '${text}' with video successfully sent to ${to}.`,
+    });
+  }
+
+  @Post('audio')
+  @FormDataRequest({ storage: FileSystemStoredFile })
+  async sendAudio(@Body() audioMessageDto: AudioMessageDto, @Res() res: Response) {
+    const to = await this.messageService.sendAudio(audioMessageDto);
+
+    return res.status(200).json({
+      code: 200,
+      msg: `Message with audio successfully sent to ${to}.`,
     });
   }
 }
