@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Res } from '@nestjs/common';
 import { MessageBroadcastService } from './message-broadcast.service';
-import { AudioMessageBroadcastDto, DocumentMessageBroadcastDto, ImageMessageBroadcastDto, TextMessageBroadcastDto } from './dto';
+import { AudioMessageBroadcastDto, DocumentMessageBroadcastDto, ImageMessageBroadcastDto, TextMessageBroadcastDto, VideoMessageBroadcastDto } from './dto';
 import { FileSystemStoredFile, FormDataRequest } from 'nestjs-form-data';
 import { Response } from 'express';
 
@@ -49,6 +49,17 @@ export class MessageBroadcastController {
     return res.status(200).json({
       code: 200,
       msg: `Broadcast Message with image successfully sent to group ${contactGroup.name}.`,
+    });
+  }
+
+  @Post('video')
+  @FormDataRequest({ storage: FileSystemStoredFile })
+  async sendVideo(@Body() videoMessageBroadcastDto: VideoMessageBroadcastDto, @Res() res: Response) {
+    const contactGroup = await this.messageBroadcastService.sendVideo(videoMessageBroadcastDto);
+
+    return res.status(200).json({
+      code: 200,
+      msg: `Broadcast Message with video successfully sent to group ${contactGroup.name}.`,
     });
   }
 }

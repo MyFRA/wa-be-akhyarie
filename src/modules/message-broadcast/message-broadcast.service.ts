@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { errorHandler } from 'src/utils/error-handler/error-handler';
 import { validatorHelper } from 'src/helpers/validator-helper/validator.service';
-import { AudioMessageBroadcastDto, DocumentMessageBroadcastDto, ImageMessageBroadcastDto, TextMessageBroadcastDto } from './dto';
+import { AudioMessageBroadcastDto, DocumentMessageBroadcastDto, ImageMessageBroadcastDto, TextMessageBroadcastDto, VideoMessageBroadcastDto } from './dto';
 import { WA_ENGINE } from 'src/config';
 import { HttpService } from '@nestjs/axios';
 import { AxiosRequestConfig } from 'axios';
@@ -219,6 +219,66 @@ export class MessageBroadcastService {
       formData.append('text', imageMessageBroadcastDto.text);
       formData.append('delay', "5000");
       formData.append('image', fs.createReadStream(imageMessageBroadcastDto.image.path));
+
+      for (let i = 0; i < contactGroupHasContacts.length; i++) {
+        const objContact = contactGroupHasContacts[i];
+        // Get contact
+        const contact = await this.validatorHelper.validateContact(objContact.contact_uuid);
+
+        const data = { to: contact.phone_number };
+
+        formData.append('data', JSON.stringify(data));
+      }
+
+      console.log(formData)
+
+      const requestConfig: AxiosRequestConfig = {
+        headers: {
+          ...formData.getHeaders(),
+        }
+      };
+
+      const responseData = await lastValueFrom(
+        this.httpService.post(url, formData, requestConfig).pipe(
+          map((response) => {
+            return response.data;
+          }),
+        ),
+      );
+
+      return contactGroup;
+    } catch (error) {
+      errorHandler(422, 'Error! Please contact the administrator.');
+    }
+  }
+
+  async sendVideo(videoMessageBroadcastDto: VideoMessageBroadcastDto) {
+    // Validate device is existing
+    const device = await this.validatorHelper.validateDevice(videoMessageBroadcastDto.device_uuid);
+    if (!device) {
+      errorHandler(422, 'Device not found! Failed to send broadcast video message.')
+    }
+
+    // Validate contact group is existing
+    const contactGroup = await this.validatorHelper.validateContactGroup(videoMessageBroadcastDto.contact_group_uuid);
+    if (!contactGroup) {
+      errorHandler(422, 'Contact group not found! Failed to send broadcast video message.')
+    }
+
+    // Validate contact group has contacts
+    const contactGroupHasContacts = await this.validatorHelper.validateContactGroupInContactGroupHasContact(videoMessageBroadcastDto.contact_group_uuid);
+    if (!contactGroupHasContacts) {
+      errorHandler(422, `Contact group doesn't have contacts! Failed to send broadcast video message.`)
+    }
+
+    try {
+      const url = `${WA_ENGINE}send-bulk-message-video`;
+
+      let formData = new FormData();
+      formData.append('session', device.name);
+      formData.append('text', videoMessageBroadcastDto.text);
+      formData.append('delay', "5000");
+      formData.append('video', fs.createReadStream(videoMessageBroadcastDto.video.path));
 
       for (let i = 0; i < contactGroupHasContacts.length; i++) {
         const objContact = contactGroupHasContacts[i];
