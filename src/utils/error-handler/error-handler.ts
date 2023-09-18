@@ -1,10 +1,10 @@
 import { HttpException } from '@nestjs/common';
 
-export function errorHandler(statusCode: number, message: any) {
+export function errorHandler(statusCode: number, message: string) {
     throw new HttpException(
         {
             code: statusCode,
-            msg: message,
+            msg: [message],
         },
         statusCode,
     );
