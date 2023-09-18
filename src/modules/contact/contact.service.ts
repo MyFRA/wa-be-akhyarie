@@ -8,9 +8,9 @@ export class ContactService {
   constructor(private prisma: PrismaService) { }
 
   async create(createContactDto: CreateContactDto, user_uuid: string) {
-    const contact = await this.findByPhoneNumber(createContactDto.phone_number);
+    const contact = await this.findByPhoneNumberAndUserUuid(createContactDto.phone_number, user_uuid);
 
-    if (!contact) {
+    if (contact) {
       errorHandler(422, 'Contact failed to create! Phone number is already in use.')
     }
 
@@ -45,6 +45,10 @@ export class ContactService {
 
   async findByPhoneNumber(phone_number: string) {
     return await this.prisma.cONTACTS.findFirst({ where: { phone_number } })
+  }
+
+  async findByPhoneNumberAndUserUuid(phone_number: string, user_uuid: string) {
+    return await this.prisma.cONTACTS.findFirst({ where: { phone_number, user_uuid } })
   }
 
   async update(uuid: string, updateContactDto: UpdateContactDto) {
