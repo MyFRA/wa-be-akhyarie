@@ -30,13 +30,26 @@ export class ContactService {
     }
   }
 
-  async findAll(user_uuid: string) {
-    const contacts = await this.prisma.cONTACTS.findMany({
-      where: { user_uuid },
-      orderBy: [{ name: 'asc' }]
-    })
+  async findAll(user_uuid: string, except_contact_group_uuid?: string) {
+    //check except_contact_group_uuid is valid contact_group_uuid
+    if (except_contact_group_uuid) {
+      const contactGroup = await this.prisma.cONTACT_GROUPS.findUnique({ where: { uuid: except_contact_group_uuid } })
+      if (!contactGroup) {
+        errorHandler(422, 'Contact group not found! Failed to get all contacts except in contact group.')
+      }
+    }
 
-    return contacts
+    try {
+      const contacts = await this.prisma.$queryRaw`
+      SELECT * FROM public."CONTACTS" 
+        WHERE user_uuid = CAST(${user_uuid} AS UUID) 
+          AND uuid NOT IN (SELECT contact_uuid FROM public."CONTACT_GROUP_HAS_CONTACTS" WHERE contact_group_uuid = CAST(${except_contact_group_uuid} AS UUID)) 
+        ORDER BY name ASC;`
+
+      return contacts
+    } catch (error) {
+      errorHandler(422, 'Error! Please contact the administrator.')
+    }
   }
 
   async findOne(uuid: string) {

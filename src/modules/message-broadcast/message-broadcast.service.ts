@@ -11,7 +11,7 @@ import * as FormData from 'form-data';
 
 @Injectable()
 export class MessageBroadcastService {
-  constructor(private validatorHelper: validatorHelper, private readonly httpService: HttpService) { }
+  constructor(private readonly validatorHelper: validatorHelper, private readonly httpService: HttpService) { }
 
   async sendText(textMessageBroadcastDto: TextMessageBroadcastDto) {
     // Validate device is existing

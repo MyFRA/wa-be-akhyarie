@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Delete, Req, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Delete, Req, Res, Query } from '@nestjs/common';
 import { ContactService } from './contact.service';
-import { CreateContactDto, UpdateContactDto } from './dto';
+import { CreateContactDto, UpdateContactDto, UuidDto } from './dto';
 import { TokenHelper } from 'src/helpers/token-helper/token.service';
 import { Request, Response } from 'express';
 import { UUIDParam } from 'src/helpers/uuid-helper';
@@ -24,10 +24,10 @@ export class ContactController {
   }
 
   @Get()
-  async findAll(@Res() res: Response, @Req() req: Request) {
+  async findAll(@Query() { except_contact_group_uuid }: UuidDto, @Res() res: Response, @Req() req: Request) {
     const user = this.tokenHelper.decode(req.headers.authorization.replace('Bearer ', ''))
 
-    const contacts = await this.contactService.findAll(user.uuid);
+    const contacts = await this.contactService.findAll(user.uuid, except_contact_group_uuid);
 
     return res.status(200).json({
       code: 200,

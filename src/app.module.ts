@@ -14,6 +14,7 @@ import { DeviceModule } from './modules/device/device.module';
 import { MessageModule } from './modules/message/message.module';
 import { ValidatorModule } from './helpers/validator-helper/validator.module';
 import { MessageBroadcastModule } from './modules/message-broadcast/message-broadcast.module';
+import { MessageScheduleModule } from './modules/message-schedule/message-schedule.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -33,6 +34,7 @@ import { MessageBroadcastModule } from './modules/message-broadcast/message-broa
     MessageModule,
     MessageBroadcastModule,
     ValidatorModule,
+    MessageScheduleModule,
   ],
 })
 export class AppModule { }

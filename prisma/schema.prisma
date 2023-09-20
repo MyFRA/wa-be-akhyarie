@@ -82,6 +82,7 @@ model DEVICES {
   USERS             USERS               @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
   MESSAGE_LOGS      MESSAGE_LOGS[]
   MESSAGE_SCHEDULES MESSAGE_SCHEDULES[]
+  AUTO_REPLIES      AUTO_REPLIES[]
 
   @@index([user_uuid])
 }
@@ -109,14 +110,25 @@ model MESSAGE_SCHEDULES {
   message_type       MESSAGE_SCHEDULES_message_type
   message            String                          @db.Text
   schedule_type      MESSAGE_SCHEDULES_schedule_type
-  schedule_value     String                          @db.Text
-  status             MESSAGE_LOGS_status
+  schedule_value     Json                            @db.Json
+  // status             MESSAGE_LOGS_status
   created_at         DateTime                        @default(now())
   updated_at         DateTime                        @updatedAt
   DEVICES            DEVICES                         @relation(fields: [device_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
   CONTACT_GROUPS     CONTACT_GROUPS                  @relation(fields: [contact_group_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
 
   @@index([device_uuid, contact_group_uuid])
+}
+
+model AUTO_REPLIES {
+  uuid          String                  @id @default(uuid()) @db.Uuid
+  device_uuid   String                  @db.Uuid
+  text_to_reply String                  @db.VarChar
+  reply_type    AUTO_REPLIES_reply_type
+  reply         String                  @db.Text
+  DEVICES       DEVICES                 @relation(fields: [device_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+
+  @@index([device_uuid])
 }
 
 enum USERS_status {
@@ -142,4 +154,12 @@ enum MESSAGE_SCHEDULES_schedule_type {
   daily
   weekly
   monthly
+}
+
+enum AUTO_REPLIES_reply_type {
+  text
+  image
+  video
+  audio
+  document
 }
