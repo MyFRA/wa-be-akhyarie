@@ -55,7 +55,7 @@ export class ContactGroupController {
 
     return res.status(200).json({
       code: 200,
-      msg: `Device ${updatedContactGroup.name} successfully updated.`,
+      msg: `Contact group ${updatedContactGroup.name} successfully updated.`,
     });
   }
 
@@ -65,7 +65,7 @@ export class ContactGroupController {
 
     return res.status(200).json({
       code: 200,
-      msg: `Device ${deletedContactGroup.name} successfully deleted.`,
+      msg: `Contact group ${deletedContactGroup.name} successfully deleted.`,
     });
   }
 }
