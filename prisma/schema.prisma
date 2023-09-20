@@ -27,14 +27,13 @@ model USERS {
   CONTACT_GROUPS             CONTACT_GROUPS[]
   CONTACT_GROUP_HAS_CONTACTS CONTACT_GROUP_HAS_CONTACTS[]
   MESSAGE_LOGS               MESSAGE_LOGS[]
-  MESSAGE_SCHEDULES          MESSAGE_SCHEDULES[]
 }
 
 model CONTACTS {
   uuid                       String                       @id @default(uuid()) @db.Uuid
   user_uuid                  String                       @db.Uuid
   name                       String                       @db.VarChar(50)
-  phone_number               String?                      @db.VarChar(16)
+  phone_number               String                       @db.VarChar(16)
   created_at                 DateTime                     @default(now())
   updated_at                 DateTime                     @updatedAt
   USERS                      USERS                        @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
@@ -72,15 +71,17 @@ model CONTACT_GROUP_HAS_CONTACTS {
 }
 
 model DEVICES {
-  uuid         String         @id @default(uuid()) @db.Uuid
-  user_uuid    String         @db.Uuid
-  name         String         @db.VarChar(50)
-  session_id   String         @db.VarChar(50)
-  api_key      String         @db.VarChar(50)
-  created_at   DateTime       @default(now())
-  updated_at   DateTime       @updatedAt
-  USERS        USERS          @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
-  MESSAGE_LOGS MESSAGE_LOGS[]
+  uuid              String              @id @default(uuid()) @db.Uuid
+  user_uuid         String              @db.Uuid
+  name              String              @db.VarChar(50)
+  phone_number      String              @db.VarChar(16)
+  session_id        String              @db.VarChar(50)
+  api_key           String              @db.VarChar(50)
+  created_at        DateTime            @default(now())
+  updated_at        DateTime            @updatedAt
+  USERS             USERS               @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+  MESSAGE_LOGS      MESSAGE_LOGS[]
+  MESSAGE_SCHEDULES MESSAGE_SCHEDULES[]
 
   @@index([user_uuid])
 }
@@ -102,18 +103,20 @@ model MESSAGE_LOGS {
 }
 
 model MESSAGE_SCHEDULES {
-  uuid               String              @id @default(uuid()) @db.Uuid
-  user_uuid          String              @db.Uuid
-  contact_group_uuid String              @db.Uuid
-  message            String              @db.Text
-  schedule_hour      String              @db.VarChar(255)
+  uuid               String                          @id @default(uuid()) @db.Uuid
+  device_uuid        String                          @db.Uuid
+  contact_group_uuid String                          @db.Uuid
+  message_type       MESSAGE_SCHEDULES_message_type
+  message            String                          @db.Text
+  schedule_type      MESSAGE_SCHEDULES_schedule_type
+  schedule_value     String                          @db.Text
   status             MESSAGE_LOGS_status
-  created_at         DateTime            @default(now())
-  updated_at         DateTime            @updatedAt
-  USERS              USERS               @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
-  CONTACT_GROUPS     CONTACT_GROUPS      @relation(fields: [contact_group_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+  created_at         DateTime                        @default(now())
+  updated_at         DateTime                        @updatedAt
+  DEVICES            DEVICES                         @relation(fields: [device_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+  CONTACT_GROUPS     CONTACT_GROUPS                  @relation(fields: [contact_group_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
 
-  @@index([user_uuid, contact_group_uuid])
+  @@index([device_uuid, contact_group_uuid])
 }
 
 enum USERS_status {
@@ -125,4 +128,18 @@ enum MESSAGE_LOGS_status {
   pending
   success
   failed
+}
+
+enum MESSAGE_SCHEDULES_message_type {
+  text
+  image
+  video
+  audio
+  document
+}
+
+enum MESSAGE_SCHEDULES_schedule_type {
+  daily
+  weekly
+  monthly
 }

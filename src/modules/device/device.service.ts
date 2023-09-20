@@ -19,12 +19,14 @@ export class DeviceService {
 
   async inputDevice(createDeviceDto: CreateDeviceDto, user_uuid: string) {
     try {
+      const device = await this.getDevice(createDeviceDto.name);
       const createDevice = await this.prisma.dEVICES.create({
         data: {
           user_uuid: user_uuid,
           name: createDeviceDto.name,
-          session_id: createDeviceDto.session_id,
-          api_key: createDeviceDto.api_key,
+          phone_number: device.phone_number,
+          session_id: device.session_id,
+          api_key: device.api_key,
         }
       });
 
@@ -103,6 +105,17 @@ export class DeviceService {
     if (match && match[1]) {
       return match[1];
     } else {
+      errorHandler(422, 'Error! Please contact the administrator.')
+    }
+  }
+
+  async getDevice(name: string) {
+    try {
+      const result = await fetch(`${WA_ENGINE}get-session?session_name=${name}`);
+      const device = JSON.parse(await result.text());
+
+      return device.data;
+    } catch (error) {
       errorHandler(422, 'Error! Please contact the administrator.')
     }
   }
