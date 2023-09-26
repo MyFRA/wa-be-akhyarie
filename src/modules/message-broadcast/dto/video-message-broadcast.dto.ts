@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsString, IsUUID } from "class-validator";
 import { FileSystemStoredFile, HasMimeType, IsFile, MaxFileSize } from "nestjs-form-data";
+import { videoMIMEType } from "src/utils/mime-type/mime-type.decorator";
 
 export class VideoMessageBroadcastDto {
     @IsNotEmpty()
@@ -17,6 +18,6 @@ export class VideoMessageBroadcastDto {
     @IsNotEmpty()
     @IsFile()
     @MaxFileSize(11e6)
-    @HasMimeType(['video/mp4', 'video/3gpp', 'video/quicktime', 'video/x-msvideo', 'video/x-ms-wmv'])
+    @HasMimeType(videoMIMEType)
     video: FileSystemStoredFile;
 }

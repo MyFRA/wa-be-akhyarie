@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsString, IsUUID } from "class-validator";
 import { FileSystemStoredFile, HasMimeType, IsFile, MaxFileSize } from "nestjs-form-data";
+import { imageMIMEType } from "src/utils/mime-type/mime-type.decorator";
 
 export class ImageMessageBroadcastDto {
     @IsNotEmpty()
@@ -17,6 +18,6 @@ export class ImageMessageBroadcastDto {
     @IsNotEmpty()
     @IsFile()
     @MaxFileSize(10e6)
-    @HasMimeType(['image/jpeg', 'image/png', 'image/jpg'])
+    @HasMimeType(imageMIMEType)
     image: FileSystemStoredFile;
 }
