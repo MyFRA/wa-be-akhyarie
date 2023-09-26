@@ -1,15 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req } from '@nestjs/common';
 import { MessageScheduleService } from './message-schedule.service';
-import { CreateMessageScheduleDto } from './dto/create-message-schedule.dto';
-import { UpdateMessageScheduleDto } from './dto/update-message-schedule.dto';
+import { CreateMessageScheduleDto, UpdateMessageScheduleDto } from './dto';
+import { FileSystemStoredFile, FormDataRequest } from 'nestjs-form-data';
+import { Request, Response } from 'express';
 
-@Controller('message-schedule')
+@Controller('api/message-schedules')
 export class MessageScheduleController {
-  constructor(private readonly messageScheduleService: MessageScheduleService) {}
+  constructor(private readonly messageScheduleService: MessageScheduleService) { }
 
   @Post()
-  create(@Body() createMessageScheduleDto: CreateMessageScheduleDto) {
-    return this.messageScheduleService.create(createMessageScheduleDto);
+  @FormDataRequest({ storage: FileSystemStoredFile })
+  async create(@Body() createMessageScheduleDto: CreateMessageScheduleDto, @Res() res: Response) {
+    const createdMessageSchedule = await this.messageScheduleService.create(createMessageScheduleDto);
+
+    return res.status(200).json({
+      code: 200,
+      msg: `Message schedule successfully created.`,
+    });
+
   }
 
   @Get()

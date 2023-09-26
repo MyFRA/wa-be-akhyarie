@@ -9,3 +9,10 @@ export function errorHandler(statusCode: number, message: string) {
         statusCode,
     );
 }
+
+export function errorHandlerNotThrow(statusCode: number, message: string) {
+    return {
+        code: statusCode,
+        msg: [message],
+    }
+}

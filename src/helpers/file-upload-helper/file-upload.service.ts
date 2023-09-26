@@ -16,7 +16,7 @@ export class FileUploadHelper {
         const fileName = `${column.replace('_', '-')}-${randomstring.generate(10)}.${uploadedFile.originalName.split('.').pop()}`;
 
         const newFilePath = join(baseDirectory, fileName);
-        console.log(uploadedFile.path)
+        await fs.mkdir(baseDirectory, { recursive: true })
         await fs.copyFile(uploadedFile.path, newFilePath);
 
         return fileName;
