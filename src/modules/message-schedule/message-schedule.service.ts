@@ -52,12 +52,16 @@ export class MessageScheduleService {
           default:
             errorHandler(422, `message_type must be one of the following values: text, audio, image, video, document`);
         }
+
         const mimeType = mimeTypes.lookup(createMessageScheduleDto.message.path);
+
         if (typeof mimeType === 'string' && !allowedMimeTypes.includes(mimeType)) {
           errorHandler(422, `Invalid message type! Allowed types: ${createMessageScheduleDto.message_type}`);
         }
+
         message = await this.fileUploadHelper.modelFileStore('MESSAGE_SCHEDULES', 'message', createMessageScheduleDto.message);
       }
+
       const createContact = await this.prisma.mESSAGE_SCHEDULES.create({
         data: {
           device_uuid: createMessageScheduleDto.device_uuid,
