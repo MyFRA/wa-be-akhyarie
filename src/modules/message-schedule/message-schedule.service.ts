@@ -65,6 +65,10 @@ export class MessageScheduleService {
 
       const schedule_value = JSON.parse(createMessageScheduleDto.schedule_value)
 
+      if (schedule_value.length !== 2 || !schedule_value.hasOwnProperty('key') || !schedule_value.hasOwnProperty('value')) {
+        errorHandler(422, `Invalid schedule value! Expected an object with 'key' and 'value' properties only.`);
+      }
+
       // Validate schedule value format
       if (schedule_value.value) {
         const scheduleValueRegex = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
