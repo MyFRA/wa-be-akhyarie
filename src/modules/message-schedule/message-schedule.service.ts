@@ -7,6 +7,7 @@ import { MESSAGE_SCHEDULES_message_type } from '@prisma/client';
 import { FileUploadHelper } from 'src/helpers/file-upload-helper/file-upload.service';
 import * as mimeTypes from 'mime-types';
 import { audioMIMEType, documentMIMEType, imageMIMEType, textMimeType, videoMIMEType } from 'src/utils/mime-type/mime-type.decorator';
+import { FILE_URL } from 'src/config';
 
 
 @Injectable()
@@ -84,8 +85,16 @@ export class MessageScheduleService {
     }
   }
 
-  findAll() {
-    return `This action returns all messageSchedule`;
+  async findAll() {
+    const messageSchedules = await this.prisma.mESSAGE_SCHEDULES.findMany({ orderBy: [{ created_at: 'desc' }] })
+
+    let extendedMessageSchedules = []
+    for (let i = 0; i < messageSchedules.length; i++) {
+      extendedMessageSchedules[i] = messageSchedules[i];
+      extendedMessageSchedules[i].message_type === 'text' ? null : (extendedMessageSchedules[i].message = FILE_URL + 'MESSAGE-SCHEDULES/message/' + extendedMessageSchedules[i].message);
+    }
+
+    return extendedMessageSchedules
   }
 
   findOne(id: number) {

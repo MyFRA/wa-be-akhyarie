@@ -21,8 +21,14 @@ export class MessageScheduleController {
   }
 
   @Get()
-  findAll() {
-    return this.messageScheduleService.findAll();
+  async findAll(@Res() res: Response) {
+    const messageSchedules = await this.messageScheduleService.findAll();
+
+    return res.status(200).json({
+      code: 200,
+      msg: 'Here is your contacts.',
+      data: messageSchedules,
+    });
   }
 
   @Get(':id')
