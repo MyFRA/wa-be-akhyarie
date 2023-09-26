@@ -1,4 +1,3 @@
-import { Type } from "class-transformer";
 import { IsEnum, IsNotEmpty, IsUUID } from "class-validator";
 import { FileSystemStoredFile } from "nestjs-form-data";
 
@@ -18,4 +17,12 @@ export class CreateMessageScheduleDto {
 
     @IsNotEmpty()
     message: string | FileSystemStoredFile;
+
+    @IsNotEmpty()
+    @IsEnum(['daily', 'weekly', 'monthly'],
+        { message: 'schedule_type must be one of the following values: daily, weekly, monthly' })
+    schedule_type: string;
+
+    @IsNotEmpty()
+    schedule_value: string;
 }
