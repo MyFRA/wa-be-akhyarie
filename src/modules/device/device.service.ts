@@ -8,29 +8,27 @@ import { WA_ENGINE } from '../../config';
 export class DeviceService {
   constructor(private prisma: PrismaService) { }
 
-  async create(createDeviceDto: CreateDeviceDto) {
+  async create(createDeviceDto: CreateDeviceDto, user_uuid: string) {
     try {
-      return await this.getContent(createDeviceDto.name)
-
-    } catch (error) {
-      errorHandler(422, 'Error! Please contact the administrator.')
-    }
-  }
-
-  async inputDevice(createDeviceDto: CreateDeviceDto, user_uuid: string) {
-    try {
-      const device = await this.getDevice(createDeviceDto.name);
       const createDevice = await this.prisma.dEVICES.create({
         data: {
           user_uuid: user_uuid,
           name: createDeviceDto.name,
-          phone_number: device.phone_number,
-          session_id: device.session_id,
-          api_key: device.api_key,
         }
       });
 
       return createDevice;
+
+    } catch (error) {
+      console.log(error)
+      errorHandler(422, 'Error! Please contact the administrator.')
+    }
+  }
+
+  async connect(uuid: string) {
+    try {
+      const device = await this.findOne(uuid);
+      return await this.getContent(device.name)
 
     } catch (error) {
       console.log(error)
@@ -91,6 +89,8 @@ export class DeviceService {
       const htmlText = await result.text();
 
       const qrValue = this.parseQRValueFromHTML(htmlText);
+
+      console.log(qrValue)
 
       return qrValue;
     } catch (error) {
