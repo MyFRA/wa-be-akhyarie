@@ -135,8 +135,12 @@ export class MessageScheduleService {
     return extendedMessageSchedules
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} messageSchedule`;
+  async findOne(uuid: string) {
+    const messageSchedule = await this.prisma.mESSAGE_SCHEDULES.findUnique({ where: { uuid } })
+    if (messageSchedule.message_type !== 'text') {
+      messageSchedule.message = FILE_URL + 'MESSAGE-SCHEDULES/message/' + messageSchedule.message;
+    }
+    return messageSchedule
   }
 
   update(id: number, updateMessageScheduleDto: UpdateMessageScheduleDto) {

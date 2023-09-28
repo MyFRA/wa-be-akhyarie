@@ -2,7 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req } from '@ne
 import { MessageScheduleService } from './message-schedule.service';
 import { CreateMessageScheduleDto, UpdateMessageScheduleDto } from './dto';
 import { FileSystemStoredFile, FormDataRequest } from 'nestjs-form-data';
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { UUIDParam } from 'src/helpers/uuid-helper';
 
 @Controller('api/message-schedules')
 export class MessageScheduleController {
@@ -31,9 +32,15 @@ export class MessageScheduleController {
     });
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.messageScheduleService.findOne(+id);
+  @Get(':uuid')
+  async findOne(@UUIDParam('uuid') uuid: string, @Res() res: Response) {
+    const messageSchedule = await this.messageScheduleService.findOne(uuid);
+
+    return res.status(200).json({
+      code: 200,
+      msg: 'Here is your contact.',
+      data: messageSchedule,
+    });
   }
 
   @Patch(':id')
