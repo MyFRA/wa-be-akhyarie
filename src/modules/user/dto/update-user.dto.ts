@@ -52,8 +52,8 @@ export class UpdateUserDto {
     password_confirmation?: string;
 
     @IsNotEmpty({ message: 'Phone number is required' })
-    @Matches(/^\+62\d{9,13}$/, { message: 'Phone number must start with "+62", minimum 9 digits and maximum 13 digits.' })
-    @IsPhoneNumber('ID', { message: 'Invalid phone number format' })
+    @Matches(/^\d{8,16}$/, { message: 'Phone number must have a minimum of 8 digits and maximum 16 digits.' })
+    // @IsPhoneNumber('ID', { message: 'Invalid phone number format' })
     phone_number: string;
 
     @IsOptional()
