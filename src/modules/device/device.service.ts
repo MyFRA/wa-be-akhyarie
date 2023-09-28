@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDeviceDto, UpdateDeviceDto } from './dto';
+import { CreateDeviceDto, UpdateDeviceDto, UpdateStatusDeviceDto } from './dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { errorHandler } from 'src/utils/error-handler/error-handler';
 import { WA_ENGINE } from '../../config';
@@ -117,6 +117,32 @@ export class DeviceService {
       return device.data;
     } catch (error) {
       errorHandler(422, 'Error! Please contact the administrator.')
+    }
+  }
+
+  async updateStatus(updateStatusDeviceDto: UpdateStatusDeviceDto, device_name: string) {
+    if (updateStatusDeviceDto.status === 'connected') {
+      await this.prisma.dEVICES.update({
+        where: { name: device_name },
+        data: {
+          status: updateStatusDeviceDto.status,
+          phone_number: updateStatusDeviceDto.phone_number,
+          session_id: updateStatusDeviceDto.session_id,
+          api_key: updateStatusDeviceDto.api_key,
+        },
+      });
+    }
+
+    if (updateStatusDeviceDto.status === 'disconnected') {
+      await this.prisma.dEVICES.update({
+        where: { name: device_name },
+        data: {
+          status: updateStatusDeviceDto.status,
+          phone_number: null,
+          session_id: null,
+          api_key: null,
+        },
+      });
     }
   }
 }

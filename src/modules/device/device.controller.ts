@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Delete, Res, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Delete, Res, Req, Param } from '@nestjs/common';
 import { DeviceService } from './device.service';
 import { Request, Response } from 'express';
 import { TokenHelper } from 'src/helpers/token-helper/token.service';
 import { UUIDParam } from 'src/helpers/uuid-helper';
 import { FormDataRequest } from 'nestjs-form-data';
-import { CreateDeviceDto, UpdateDeviceDto } from './dto';
+import { CreateDeviceDto, UpdateDeviceDto, UpdateStatusDeviceDto } from './dto';
 
 @Controller('api/devices')
 export class DeviceController {
@@ -77,6 +77,17 @@ export class DeviceController {
     return res.status(200).json({
       code: 200,
       msg: `Device ${deletedDevice.name} successfully deleted.`,
+    });
+  }
+
+  @Post('update-status/:device_name')
+  @FormDataRequest()
+  async updateStatus(@Param('device_name') device_name: string, @Body() updateStatusDeviceDto: UpdateStatusDeviceDto, @Res() res: Response, @Req() req: Request) {
+    const createdDevice = await this.deviceService.updateStatus(updateStatusDeviceDto, device_name);
+
+    return res.status(200).json({
+      code: 200,
+      // msg: `Device ${createdDevice.name} successfully created.`,
     });
   }
 }

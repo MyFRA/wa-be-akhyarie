@@ -73,7 +73,7 @@ model CONTACT_GROUP_HAS_CONTACTS {
 model DEVICES {
   uuid              String              @id @default(uuid()) @db.Uuid
   user_uuid         String              @db.Uuid
-  name              String              @db.VarChar(50)
+  name              String              @unique @db.VarChar(50)
   phone_number      String?             @db.VarChar(16)
   session_id        String?             @db.VarChar(50)
   api_key           String?             @db.VarChar(50)
