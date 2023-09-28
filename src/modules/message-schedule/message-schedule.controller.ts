@@ -43,9 +43,15 @@ export class MessageScheduleController {
     });
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMessageScheduleDto: UpdateMessageScheduleDto) {
-    return this.messageScheduleService.update(+id, updateMessageScheduleDto);
+  @Patch(':uuid')
+  @FormDataRequest({ storage: FileSystemStoredFile })
+  async update(@UUIDParam('uuid') uuid: string, @Body() updateMessageScheduleDto: UpdateMessageScheduleDto, @Res() res: Response) {
+    await this.messageScheduleService.update(uuid, updateMessageScheduleDto);
+
+    return res.status(200).json({
+      code: 200,
+      msg: `Message Schedule successfully updated.`,
+    });
   }
 
   @Delete(':id')
