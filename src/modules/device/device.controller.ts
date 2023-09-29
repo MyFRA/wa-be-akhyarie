@@ -83,11 +83,11 @@ export class DeviceController {
   @Post('update-status/:device_name')
   @FormDataRequest()
   async updateStatus(@Param('device_name') device_name: string, @Body() updateStatusDeviceDto: UpdateStatusDeviceDto, @Res() res: Response, @Req() req: Request) {
-    const createdDevice = await this.deviceService.updateStatus(updateStatusDeviceDto, device_name);
+    const updatedDeviceStatus = await this.deviceService.updateStatus(updateStatusDeviceDto, device_name);
 
     return res.status(200).json({
       code: 200,
-      // msg: `Device ${createdDevice.name} successfully created.`,
+      msg: `Device ${updatedDeviceStatus.name} with status ${updatedDeviceStatus.status} successfully updated.`,
     });
   }
 }

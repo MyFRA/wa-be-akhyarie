@@ -121,28 +121,42 @@ export class DeviceService {
   }
 
   async updateStatus(updateStatusDeviceDto: UpdateStatusDeviceDto, device_name: string) {
-    if (updateStatusDeviceDto.status === 'connected') {
-      await this.prisma.dEVICES.update({
-        where: { name: device_name },
-        data: {
-          status: updateStatusDeviceDto.status,
-          phone_number: updateStatusDeviceDto.phone_number,
-          session_id: updateStatusDeviceDto.session_id,
-          api_key: updateStatusDeviceDto.api_key,
-        },
-      });
-    }
+    try {
+      if (updateStatusDeviceDto.status === 'connected') {
+        // buatkan saya code untuk validasi, jika updateStatusDeviceDto.status === 'connected' maka phone_number, session_id dan api_key itu required
 
-    if (updateStatusDeviceDto.status === 'disconnected') {
-      await this.prisma.dEVICES.update({
-        where: { name: device_name },
-        data: {
-          status: updateStatusDeviceDto.status,
-          phone_number: null,
-          session_id: null,
-          api_key: null,
-        },
-      });
+        if (!updateStatusDeviceDto.phone_number || !updateStatusDeviceDto.session_id || !updateStatusDeviceDto.api_key) {
+          errorHandler(422, `phone_number, session_id and api_key are required when status is connected.`)
+        }
+        return await this.prisma.dEVICES.update({
+          where: { name: device_name },
+          data: {
+            status: updateStatusDeviceDto.status,
+            phone_number: updateStatusDeviceDto.phone_number,
+            session_id: updateStatusDeviceDto.session_id,
+            api_key: updateStatusDeviceDto.api_key,
+          },
+        });
+      }
+
+      if (updateStatusDeviceDto.status === 'disconnected') {
+        return await this.prisma.dEVICES.update({
+          where: { name: device_name },
+          data: {
+            status: updateStatusDeviceDto.status,
+            phone_number: null,
+            session_id: null,
+            api_key: null,
+          },
+        });
+      }
+    } catch (error) {
+      if (error.response) {
+        if (error.response.code === 422) {
+          errorHandler(error.response.code, error.response.msg[0])
+        }
+      }
+      errorHandler(422, 'Error! Please contact the administrator.')
     }
   }
 }
