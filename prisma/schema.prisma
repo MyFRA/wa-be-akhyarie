@@ -2,171 +2,173 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model USERS {
-  uuid                       String                       @id @default(uuid()) @db.Uuid
-  name                       String                       @db.VarChar(50)
-  phone_number               String?                      @db.VarChar(16)
-  email                      String                       @unique @db.VarChar(60)
-  password                   String                       @db.VarChar(255)
-  photo                      String?                      @db.VarChar(255)
-  expired_at                 DateTime                     @db.Timestamp(0)
-  is_demo                    Boolean                      @default(true)
-  status                     USERS_status
-  created_at                 DateTime                     @default(now())
-  updated_at                 DateTime                     @updatedAt
-  DEVICES                    DEVICES[]
-  CONTACTS                   CONTACTS[]
-  CONTACT_GROUPS             CONTACT_GROUPS[]
-  CONTACT_GROUP_HAS_CONTACTS CONTACT_GROUP_HAS_CONTACTS[]
-  MESSAGE_LOGS               MESSAGE_LOGS[]
+    uuid                       String                       @id @default(uuid()) @db.Uuid
+    name                       String                       @db.VarChar(50)
+    phone_number               String?                      @db.VarChar(16)
+    email                      String                       @unique @db.VarChar(60)
+    password                   String                       @db.VarChar(255)
+    photo                      String?                      @db.VarChar(255)
+    expired_at                 DateTime                     @db.Timestamp(0)
+    is_demo                    Boolean                      @default(true)
+    token_code                 String?                      @db.VarChar(50)
+    email_verified_at          DateTime?
+    status                     USERS_status
+    created_at                 DateTime                     @default(now())
+    updated_at                 DateTime                     @updatedAt
+    DEVICES                    DEVICES[]
+    CONTACTS                   CONTACTS[]
+    CONTACT_GROUPS             CONTACT_GROUPS[]
+    CONTACT_GROUP_HAS_CONTACTS CONTACT_GROUP_HAS_CONTACTS[]
+    MESSAGE_LOGS               MESSAGE_LOGS[]
 }
 
 model CONTACTS {
-  uuid                       String                       @id @default(uuid()) @db.Uuid
-  user_uuid                  String                       @db.Uuid
-  name                       String                       @db.VarChar(50)
-  phone_number               String                       @db.VarChar(16)
-  created_at                 DateTime                     @default(now())
-  updated_at                 DateTime                     @updatedAt
-  USERS                      USERS                        @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
-  CONTACT_GROUP_HAS_CONTACTS CONTACT_GROUP_HAS_CONTACTS[]
-  MESSAGE_LOGS               MESSAGE_LOGS[]
+    uuid                       String                       @id @default(uuid()) @db.Uuid
+    user_uuid                  String                       @db.Uuid
+    name                       String                       @db.VarChar(50)
+    phone_number               String                       @db.VarChar(16)
+    created_at                 DateTime                     @default(now())
+    updated_at                 DateTime                     @updatedAt
+    USERS                      USERS                        @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+    CONTACT_GROUP_HAS_CONTACTS CONTACT_GROUP_HAS_CONTACTS[]
+    MESSAGE_LOGS               MESSAGE_LOGS[]
 
-  @@index([user_uuid])
+    @@index([user_uuid])
 }
 
 model CONTACT_GROUPS {
-  uuid                       String                       @id @default(uuid()) @db.Uuid
-  user_uuid                  String                       @db.Uuid
-  name                       String                       @db.VarChar(50)
-  created_at                 DateTime                     @default(now())
-  updated_at                 DateTime                     @updatedAt
-  USERS                      USERS                        @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
-  CONTACT_GROUP_HAS_CONTACTS CONTACT_GROUP_HAS_CONTACTS[]
-  MESSAGE_SCHEDULES          MESSAGE_SCHEDULES[]
+    uuid                       String                       @id @default(uuid()) @db.Uuid
+    user_uuid                  String                       @db.Uuid
+    name                       String                       @db.VarChar(50)
+    created_at                 DateTime                     @default(now())
+    updated_at                 DateTime                     @updatedAt
+    USERS                      USERS                        @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+    CONTACT_GROUP_HAS_CONTACTS CONTACT_GROUP_HAS_CONTACTS[]
+    MESSAGE_SCHEDULES          MESSAGE_SCHEDULES[]
 
-  @@index([user_uuid])
+    @@index([user_uuid])
 }
 
 model CONTACT_GROUP_HAS_CONTACTS {
-  uuid               String         @id @default(uuid()) @db.Uuid
-  user_uuid          String         @db.Uuid
-  contact_group_uuid String         @db.Uuid
-  contact_uuid       String         @db.Uuid
-  created_at         DateTime       @default(now())
-  updated_at         DateTime       @updatedAt
-  USERS              USERS          @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
-  CONTACT_GROUPS     CONTACT_GROUPS @relation(fields: [contact_group_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
-  CONTACTS           CONTACTS       @relation(fields: [contact_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+    uuid               String         @id @default(uuid()) @db.Uuid
+    user_uuid          String         @db.Uuid
+    contact_group_uuid String         @db.Uuid
+    contact_uuid       String         @db.Uuid
+    created_at         DateTime       @default(now())
+    updated_at         DateTime       @updatedAt
+    USERS              USERS          @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+    CONTACT_GROUPS     CONTACT_GROUPS @relation(fields: [contact_group_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+    CONTACTS           CONTACTS       @relation(fields: [contact_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
 
-  @@index([user_uuid, contact_group_uuid, contact_uuid])
+    @@index([user_uuid, contact_group_uuid, contact_uuid])
 }
 
 model DEVICES {
-  uuid              String              @id @default(uuid()) @db.Uuid
-  user_uuid         String              @db.Uuid
-  name              String              @unique @db.VarChar(50)
-  phone_number      String?             @db.VarChar(16)
-  session_id        String?             @db.VarChar(50)
-  api_key           String?             @db.VarChar(50)
-  status            DEVICE_status       @default(unconnected)
-  created_at        DateTime            @default(now())
-  updated_at        DateTime            @updatedAt
-  USERS             USERS               @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
-  MESSAGE_LOGS      MESSAGE_LOGS[]
-  MESSAGE_SCHEDULES MESSAGE_SCHEDULES[]
-  AUTO_REPLIES      AUTO_REPLIES[]
+    uuid              String              @id @default(uuid()) @db.Uuid
+    user_uuid         String              @db.Uuid
+    name              String              @unique @db.VarChar(50)
+    phone_number      String?             @db.VarChar(16)
+    session_id        String?             @db.VarChar(50)
+    api_key           String?             @db.VarChar(50)
+    status            DEVICE_status       @default(unconnected)
+    created_at        DateTime            @default(now())
+    updated_at        DateTime            @updatedAt
+    USERS             USERS               @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+    MESSAGE_LOGS      MESSAGE_LOGS[]
+    MESSAGE_SCHEDULES MESSAGE_SCHEDULES[]
+    AUTO_REPLIES      AUTO_REPLIES[]
 
-  @@index([user_uuid])
+    @@index([user_uuid])
 }
 
 model MESSAGE_LOGS {
-  uuid         String              @id @default(uuid()) @db.Uuid
-  user_uuid    String              @db.Uuid
-  device_uuid  String              @db.Uuid
-  contact_uuid String              @db.Uuid
-  message      String              @db.VarChar(50)
-  status       MESSAGE_LOGS_status
-  created_at   DateTime            @default(now())
-  updated_at   DateTime            @updatedAt
-  USERS        USERS               @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
-  DEVICES      DEVICES             @relation(fields: [device_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
-  CONTACTS     CONTACTS            @relation(fields: [contact_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+    uuid         String              @id @default(uuid()) @db.Uuid
+    user_uuid    String              @db.Uuid
+    device_uuid  String              @db.Uuid
+    contact_uuid String              @db.Uuid
+    message      String              @db.VarChar(50)
+    status       MESSAGE_LOGS_status
+    created_at   DateTime            @default(now())
+    updated_at   DateTime            @updatedAt
+    USERS        USERS               @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+    DEVICES      DEVICES             @relation(fields: [device_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+    CONTACTS     CONTACTS            @relation(fields: [contact_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
 
-  @@index([user_uuid, device_uuid, contact_uuid])
+    @@index([user_uuid, device_uuid, contact_uuid])
 }
 
 model MESSAGE_SCHEDULES {
-  uuid               String                          @id @default(uuid()) @db.Uuid
-  device_uuid        String                          @db.Uuid
-  contact_group_uuid String                          @db.Uuid
-  message_type       MESSAGE_SCHEDULES_message_type
-  message            String                          @db.Text
-  schedule_type      MESSAGE_SCHEDULES_schedule_type
-  schedule_value     Json                            @db.Json
-  // status             MESSAGE_LOGS_status
-  created_at         DateTime                        @default(now())
-  updated_at         DateTime                        @updatedAt
-  DEVICES            DEVICES                         @relation(fields: [device_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
-  CONTACT_GROUPS     CONTACT_GROUPS                  @relation(fields: [contact_group_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+    uuid               String                          @id @default(uuid()) @db.Uuid
+    device_uuid        String                          @db.Uuid
+    contact_group_uuid String                          @db.Uuid
+    message_type       MESSAGE_SCHEDULES_message_type
+    message            String                          @db.Text
+    schedule_type      MESSAGE_SCHEDULES_schedule_type
+    schedule_value     Json                            @db.Json
+    // status             MESSAGE_LOGS_status
+    created_at         DateTime                        @default(now())
+    updated_at         DateTime                        @updatedAt
+    DEVICES            DEVICES                         @relation(fields: [device_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+    CONTACT_GROUPS     CONTACT_GROUPS                  @relation(fields: [contact_group_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
 
-  @@index([device_uuid, contact_group_uuid])
+    @@index([device_uuid, contact_group_uuid])
 }
 
 model AUTO_REPLIES {
-  uuid          String                  @id @default(uuid()) @db.Uuid
-  device_uuid   String                  @db.Uuid
-  text_to_reply String                  @db.VarChar
-  reply_type    AUTO_REPLIES_reply_type
-  reply         String                  @db.Text
-  DEVICES       DEVICES                 @relation(fields: [device_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+    uuid          String                  @id @default(uuid()) @db.Uuid
+    device_uuid   String                  @db.Uuid
+    text_to_reply String                  @db.VarChar
+    reply_type    AUTO_REPLIES_reply_type
+    reply         String                  @db.Text
+    DEVICES       DEVICES                 @relation(fields: [device_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
 
-  @@index([device_uuid])
+    @@index([device_uuid])
 }
 
 enum USERS_status {
-  admin
-  user
+    admin
+    user
 }
 
 enum DEVICE_status {
-  unconnected
-  connected
-  disconnected
+    unconnected
+    connected
+    disconnected
 }
 
 enum MESSAGE_LOGS_status {
-  pending
-  success
-  failed
+    pending
+    success
+    failed
 }
 
 enum MESSAGE_SCHEDULES_message_type {
-  text
-  image
-  video
-  audio
-  document
+    text
+    image
+    video
+    audio
+    document
 }
 
 enum MESSAGE_SCHEDULES_schedule_type {
-  daily
-  weekly
-  monthly
+    daily
+    weekly
+    monthly
 }
 
 enum AUTO_REPLIES_reply_type {
-  text
-  image
-  video
-  audio
-  document
+    text
+    image
+    video
+    audio
+    document
 }

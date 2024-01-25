@@ -15,6 +15,8 @@ import { MessageModule } from './modules/message/message.module';
 import { ValidatorModule } from './helpers/validator-helper/validator.module';
 import { MessageBroadcastModule } from './modules/message-broadcast/message-broadcast.module';
 import { MessageScheduleModule } from './modules/message-schedule/message-schedule.module';
+import { MailModule } from './modules/mail/mail.module';
+import { StringGeneratorModule } from './helpers/string-generator/string-generator.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -35,6 +37,8 @@ import { MessageScheduleModule } from './modules/message-schedule/message-schedu
     MessageBroadcastModule,
     ValidatorModule,
     MessageScheduleModule,
+    MailModule,
+    StringGeneratorModule,
   ],
 })
 export class AppModule { }
