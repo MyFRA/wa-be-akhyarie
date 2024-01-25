@@ -13,6 +13,19 @@ import { StringGeneratorModule } from 'src/helpers/string-generator/string-gener
 })
 export class AuthModule implements NestModule {
     public configure(consumer: MiddlewareConsumer) {
-        consumer.apply(AuthMiddleware).forRoutes({ path: 'auth/user', method: RequestMethod.GET }, { path: 'auth/dashboard', method: RequestMethod.GET });
+        consumer.apply(AuthMiddleware).forRoutes(
+            {
+                path: 'auth/user',
+                method: RequestMethod.GET,
+            },
+            {
+                path: 'auth/dashboard',
+                method: RequestMethod.GET,
+            },
+            {
+                path: 'auth/verify-email',
+                method: RequestMethod.POST,
+            },
+        );
     }
 }

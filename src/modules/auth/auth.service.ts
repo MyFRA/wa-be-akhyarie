@@ -7,6 +7,8 @@ import { errorHandler } from 'src/utils/error-handler/error-handler';
 import { GetCurrentUserHelper } from 'src/helpers/get-current-user-helper/get-current-user.service';
 import { MailService } from '../mail/mail.service';
 import { StringGeneratorService } from 'src/helpers/string-generator/string-generator.service';
+import { VerifyEmailDto } from './dto/verify-email.dto';
+import { USERS } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -75,5 +77,26 @@ export class AuthService {
 
     async findUserByEmail(email: string) {
         return await this.prisma.uSERS.findUnique({ where: { email } });
+    }
+
+    async verifyEmail(verifyEmailDto: VerifyEmailDto, user: USERS) {
+        if (user.email_verified_at) {
+            errorHandler(422, 'User account has been verified');
+        }
+
+        if (user.token_code != verifyEmailDto.code) {
+            errorHandler(422, 'Code is not valid');
+        }
+
+        await this.prisma.uSERS.update({
+            where: {
+                email: user.email,
+            },
+            data: {
+                email_verified_at: new Date(),
+            },
+        });
+
+        return user;
     }
 }
