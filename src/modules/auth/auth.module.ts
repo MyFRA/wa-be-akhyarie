@@ -5,10 +5,13 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
 import { AuthMiddleware } from 'src/middleware/auth.middleware';
 import { MailModule } from '../mail/mail.module';
 import { StringGeneratorModule } from 'src/helpers/string-generator/string-generator.module';
+import { EmailExistsValidation } from 'src/rules/EmailExists';
+import { UserService } from '../user/user.service';
+import { ResetPasswordTokenExistsValidation } from 'src/rules/ResetPasswordTokenExists';
 
 @Module({
     controllers: [AuthController],
-    providers: [AuthService],
+    providers: [AuthService, EmailExistsValidation, UserService, ResetPasswordTokenExistsValidation],
     imports: [NestjsFormDataModule, MailModule, StringGeneratorModule],
 })
 export class AuthModule implements NestModule {

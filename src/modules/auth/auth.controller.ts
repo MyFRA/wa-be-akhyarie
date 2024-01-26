@@ -4,6 +4,8 @@ import { LoginDto, RegistrationDto } from './dto';
 import { Request, Response } from 'express';
 import { FormDataRequest } from 'nestjs-form-data';
 import { VerifyEmailDto } from './dto/verify-email.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('api/auth')
 export class AuthController {
@@ -12,11 +14,12 @@ export class AuthController {
     @Post('registration')
     @FormDataRequest()
     async registration(@Body() registrationDto: RegistrationDto, @Res() res: Response) {
-        await this.authService.registration(registrationDto);
+        const token = await this.authService.registration(registrationDto);
 
         return res.status(200).json({
             code: 200,
             msg: 'You Have Successfully Registered',
+            data: token,
         });
     }
 
@@ -45,6 +48,7 @@ export class AuthController {
     }
 
     @Post('verify-email')
+    @FormDataRequest()
     async verifyEmail(@Body() verifyEmailDto: VerifyEmailDto, @Req() req: Request, @Res() res: Response) {
         const token = req.headers.authorization;
         const user = await this.authService.getCurrentUser(token);
@@ -53,6 +57,28 @@ export class AuthController {
         return res.status(200).json({
             code: 200,
             msg: 'Account successfully verified',
+        });
+    }
+
+    @Post('forgot-password')
+    @FormDataRequest()
+    async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto, @Res() res: Response) {
+        await this.authService.forgotPassword(forgotPasswordDto);
+
+        return res.status(200).json({
+            code: 200,
+            msg: 'Link reset password telah dikirimkan ke email Anda. Silakan periksa kotak masuk Anda',
+        });
+    }
+
+    @Post('reset-password')
+    @FormDataRequest()
+    async resetPassword(@Body() resetPasswordDto: ResetPasswordDto, @Res() res: Response) {
+        await this.authService.resetPassword(resetPasswordDto);
+
+        return res.status(200).json({
+            code: 200,
+            msg: 'Kata sandi telah direset',
         });
     }
 }

@@ -9,6 +9,8 @@ import { MailService } from '../mail/mail.service';
 import { StringGeneratorService } from 'src/helpers/string-generator/string-generator.service';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { USERS } from '@prisma/client';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -36,7 +38,9 @@ export class AuthService {
 
             this.mailService.sendEmail(createUser.email, createUser.name, createUser.token_code);
 
-            return createUser;
+            const token = this.tokenHelper.encode(createUser.uuid, createUser.email, createUser.name, createUser.status);
+
+            return token;
         } catch (error) {
             errorHandler(422, 'Error! Please contact the administrator.');
         }
@@ -98,5 +102,32 @@ export class AuthService {
         });
 
         return user;
+    }
+
+    async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
+        await this.prisma.uSERS.update({
+            where: {
+                email: forgotPasswordDto.email,
+            },
+            data: {
+                reset_password_token: this.stringGenerator.getRandomString(10).toString(),
+            },
+        });
+
+        const user = await this.findUserByEmail(forgotPasswordDto.email);
+
+        this.mailService.sendEmailForgotPassword(user.name, user.email, user.reset_password_token);
+    }
+
+    async resetPassword(resetPasswordDto: ResetPasswordDto) {
+        await this.prisma.uSERS.updateMany({
+            data: {
+                password: await bcrypt.hash(resetPasswordDto.password, 10),
+                reset_password_token: null,
+            },
+            where: {
+                reset_password_token: resetPasswordDto.token,
+            },
+        });
     }
 }
