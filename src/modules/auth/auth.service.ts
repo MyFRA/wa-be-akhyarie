@@ -21,7 +21,7 @@ export class AuthService {
         const user_email = await this.findUserByEmail(registrationDto.email);
 
         if (user_email) {
-            errorHandler(422, 'You Failed to Register! Email already in use.');
+            errorHandler(400, 'You Failed to Register! Email already in use.');
         }
 
         try {
@@ -42,7 +42,7 @@ export class AuthService {
 
             return token;
         } catch (error) {
-            errorHandler(422, 'Error! Please contact the administrator.');
+            errorHandler(400, 'Error! Please contact the administrator.');
         }
     }
 
@@ -52,7 +52,7 @@ export class AuthService {
 
         // if user does not exist throw exception
         if (!user) {
-            errorHandler(422, 'Email or password is wrong.');
+            errorHandler(400, 'Email or password is wrong.');
         }
 
         // compare password
@@ -60,7 +60,7 @@ export class AuthService {
 
         // if password incorrect throw exception
         if (!pwMatches) {
-            errorHandler(422, 'Email or password is wrong.');
+            errorHandler(400, 'Email or password is wrong.');
         }
         // Generate Token
         const token = this.tokenHelper.encode(user.uuid, user.email, user.name, user.status);
@@ -85,11 +85,11 @@ export class AuthService {
 
     async verifyEmail(verifyEmailDto: VerifyEmailDto, user: USERS) {
         if (user.email_verified_at) {
-            errorHandler(422, 'User account has been verified');
+            errorHandler(400, 'User account has been verified');
         }
 
         if (user.token_code != verifyEmailDto.code) {
-            errorHandler(422, 'Code is not valid');
+            errorHandler(400, 'Code is not valid');
         }
 
         await this.prisma.uSERS.update({

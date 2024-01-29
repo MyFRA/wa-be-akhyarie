@@ -4,7 +4,7 @@ export function errorHandler(statusCode: number, message: string) {
     throw new HttpException(
         {
             code: statusCode,
-            msg: [message],
+            message: [message],
         },
         statusCode,
     );
@@ -13,6 +13,6 @@ export function errorHandler(statusCode: number, message: string) {
 export function errorHandlerNotThrow(statusCode: number, message: string) {
     return {
         code: statusCode,
-        msg: [message],
-    }
+        message: [message],
+    };
 }
