@@ -2,7 +2,7 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { NestjsFormDataModule } from 'nestjs-form-data';
-import { AuthMiddleware } from 'src/middleware/auth.middleware';
+import { AuthMiddleware } from 'src/middleware';
 import { MailModule } from '../mail/mail.module';
 import { StringGeneratorModule } from 'src/helpers/string-generator/string-generator.module';
 import { EmailExistsValidation } from 'src/rules/EmailExists';
@@ -18,15 +18,15 @@ export class AuthModule implements NestModule {
     public configure(consumer: MiddlewareConsumer) {
         consumer.apply(AuthMiddleware).forRoutes(
             {
-                path: 'auth/user',
+                path: '/api/auth/user',
                 method: RequestMethod.GET,
             },
             {
-                path: 'auth/dashboard',
+                path: '/api/auth/dashboard',
                 method: RequestMethod.GET,
             },
             {
-                path: 'auth/verify-email',
+                path: '/api/auth/verify-email',
                 method: RequestMethod.POST,
             },
         );

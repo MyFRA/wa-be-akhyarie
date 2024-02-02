@@ -3,6 +3,7 @@ import { CreateDeviceDto, UpdateDeviceDto, UpdateStatusDeviceDto } from './dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { errorHandler } from 'src/utils/error-handler/error-handler';
 import { WA_ENGINE } from '../../config';
+import { UUID } from 'crypto';
 
 @Injectable()
 export class DeviceService {
@@ -153,6 +154,26 @@ export class DeviceService {
                     errorHandler(error.response.code, error.response.msg[0]);
                 }
             }
+            errorHandler(400, 'Error! Please contact the administrator.');
+        }
+    }
+
+    async getProfilePicture(uuid: string) {
+        try {
+            const device = await this.findOne(uuid);
+
+            try {
+                const result = await fetch(`${WA_ENGINE}get-profile-picture?session_name=${device.name}`);
+                const data = await result.json();
+
+                return data.data.profile_picture;
+            } catch (error) {
+                errorHandler(400, 'Error! Please contact the administrator.');
+            }
+
+            return await this.getContent(device.name);
+        } catch (error) {
+            console.log(error);
             errorHandler(400, 'Error! Please contact the administrator.');
         }
     }

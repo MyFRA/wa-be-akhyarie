@@ -4,12 +4,12 @@ import { TokenHelper } from 'src/helpers/token-helper/token.service';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-
-    constructor(private tokenHelper: TokenHelper) { }
+    constructor(private tokenHelper: TokenHelper) {}
 
     use(req: Request, res: Response, next: NextFunction) {
         // Token
         const authHeaders = req.headers.authorization;
+        console.log('ok');
 
         if (authHeaders && (authHeaders as string).split(' ')[1]) {
             try {
