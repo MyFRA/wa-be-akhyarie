@@ -27,8 +27,9 @@ export class MessageBroadcastService {
         }
 
         // Validate contact group has contacts
-        const contactGroupHasContacts = await this.validatorHelper.validateContactGroupInContactGroupHasContact(textMessageBroadcastDto.contact_group_uuid);
-        if (!contactGroupHasContacts) {
+        // const contactGroupHasContacts = await this.validatorHelper.validateContactGroupInContactGroupHasContact(textMessageBroadcastDto.contact_group_uuid);
+        const contactGroupHasContacts = [];
+        if (contactGroupHasContacts.length == 0) {
             errorHandler(400, `Contact group doesn't have contacts! Failed to send broadcast message.`);
         }
 
@@ -87,15 +88,16 @@ export class MessageBroadcastService {
         }
 
         // Validate contact group has contacts
-        const contactGroupHasContacts = await this.validatorHelper.validateContactGroupInContactGroupHasContact(audioMessageBroadcastDto.contact_group_uuid);
-        if (!contactGroupHasContacts) {
+        // const contactGroupHasContacts = await this.validatorHelper.validateContactGroupInContactGroupHasContact(audioMessageBroadcastDto.contact_group_uuid);
+        const contactGroupHasContacts = [];
+        if (contactGroupHasContacts.length == 0) {
             errorHandler(400, `Contact group doesn't have contacts! Failed to send broadcast audio message.`);
         }
 
         try {
             const url = `${WA_ENGINE}send-bulk-message-audio`;
 
-            let formData = new FormData();
+            const formData = new FormData();
             formData.append('session', device.name);
             formData.append('delay', '5000');
             formData.append('audio', fs.createReadStream(audioMessageBroadcastDto.audio.path));
@@ -146,15 +148,16 @@ export class MessageBroadcastService {
         }
 
         // Validate contact group has contacts
-        const contactGroupHasContacts = await this.validatorHelper.validateContactGroupInContactGroupHasContact(documentMessageBroadcastDto.contact_group_uuid);
-        if (!contactGroupHasContacts) {
+        // const contactGroupHasContacts = await this.validatorHelper.validateContactGroupInContactGroupHasContact(documentMessageBroadcastDto.contact_group_uuid);
+        const contactGroupHasContacts = [];
+        if (contactGroupHasContacts.length == 0) {
             errorHandler(400, `Contact group doesn't have contacts! Failed to send broadcast document message.`);
         }
 
         try {
             const url = `${WA_ENGINE}send-bulk-message-document`;
 
-            let formData = new FormData();
+            const formData = new FormData();
             formData.append('session', device.name);
             formData.append('text', documentMessageBroadcastDto.text);
             formData.append('delay', '5000');
@@ -206,15 +209,16 @@ export class MessageBroadcastService {
         }
 
         // Validate contact group has contacts
-        const contactGroupHasContacts = await this.validatorHelper.validateContactGroupInContactGroupHasContact(imageMessageBroadcastDto.contact_group_uuid);
-        if (!contactGroupHasContacts) {
+        // const contactGroupHasContacts = await this.validatorHelper.validateContactGroupInContactGroupHasContact(imageMessageBroadcastDto.contact_group_uuid);
+        const contactGroupHasContacts = [];
+        if (contactGroupHasContacts.length == 0) {
             errorHandler(400, `Contact group doesn't have contacts! Failed to send broadcast image message.`);
         }
 
         try {
             const url = `${WA_ENGINE}send-bulk-message-image`;
 
-            let formData = new FormData();
+            const formData = new FormData();
             formData.append('session', device.name);
             formData.append('text', imageMessageBroadcastDto.text);
             formData.append('delay', '5000');
@@ -266,15 +270,16 @@ export class MessageBroadcastService {
         }
 
         // Validate contact group has contacts
-        const contactGroupHasContacts = await this.validatorHelper.validateContactGroupInContactGroupHasContact(videoMessageBroadcastDto.contact_group_uuid);
-        if (!contactGroupHasContacts) {
+        // const contactGroupHasContacts = await this.validatorHelper.validateContactGroupInContactGroupHasContact(videoMessageBroadcastDto.contact_group_uuid);
+        const contactGroupHasContacts = [];
+        if (contactGroupHasContacts.length == 0) {
             errorHandler(400, `Contact group doesn't have contacts! Failed to send broadcast video message.`);
         }
 
         try {
             const url = `${WA_ENGINE}send-bulk-message-video`;
 
-            let formData = new FormData();
+            const formData = new FormData();
             formData.append('session', device.name);
             formData.append('text', videoMessageBroadcastDto.text);
             formData.append('delay', '5000');

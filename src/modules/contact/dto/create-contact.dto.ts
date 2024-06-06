@@ -1,6 +1,10 @@
-import { IsNotEmpty, IsPhoneNumber, IsString, Matches } from "class-validator";
+import { IsNotEmpty, IsPhoneNumber, IsString, IsUUID, Matches } from 'class-validator';
 
 export class CreateContactDto {
+    @IsNotEmpty()
+    @IsUUID()
+    contact_group_uuid: string;
+
     @IsNotEmpty()
     @IsString()
     name: string;

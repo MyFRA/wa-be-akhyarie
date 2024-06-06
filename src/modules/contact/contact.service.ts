@@ -20,11 +20,13 @@ export class ContactService {
                     user_uuid: user_uuid,
                     name: createContactDto.name,
                     phone_number: createContactDto.phone_number,
+                    contact_group_uuid: createContactDto.contact_group_uuid,
                 },
             });
 
             return createContact;
         } catch (error) {
+            console.log(error);
             errorHandler(400, 'Error! Please contact the administrator.');
         }
     }
@@ -53,6 +55,13 @@ export class ContactService {
 
     async findOne(uuid: string) {
         return await this.prisma.cONTACTS.findUnique({ where: { uuid } });
+    }
+
+    async getByContactGroupUuid(contact_group_uuid: string) {
+        return await this.prisma.$queryRaw`
+        SELECT * FROM public."CONTACTS" 
+          WHERE contact_group_uuid = CAST(${contact_group_uuid} AS UUID) 
+          ORDER BY name ASC;`;
     }
 
     async findByPhoneNumber(phone_number: string) {

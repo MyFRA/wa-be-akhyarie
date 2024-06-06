@@ -28,22 +28,7 @@ model USERS {
     DEVICES                    DEVICES[]
     CONTACTS                   CONTACTS[]
     CONTACT_GROUPS             CONTACT_GROUPS[]
-    CONTACT_GROUP_HAS_CONTACTS CONTACT_GROUP_HAS_CONTACTS[]
     MESSAGE_LOGS               MESSAGE_LOGS[]
-}
-
-model CONTACTS {
-    uuid                       String                       @id @default(uuid()) @db.Uuid
-    user_uuid                  String                       @db.Uuid
-    name                       String                       @db.VarChar(50)
-    phone_number               String                       @db.VarChar(16)
-    created_at                 DateTime                     @default(now())
-    updated_at                 DateTime                     @updatedAt
-    USERS                      USERS                        @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
-    CONTACT_GROUP_HAS_CONTACTS CONTACT_GROUP_HAS_CONTACTS[]
-    MESSAGE_LOGS               MESSAGE_LOGS[]
-
-    @@index([user_uuid])
 }
 
 model CONTACT_GROUPS {
@@ -53,25 +38,28 @@ model CONTACT_GROUPS {
     created_at                 DateTime                     @default(now())
     updated_at                 DateTime                     @updatedAt
     USERS                      USERS                        @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
-    CONTACT_GROUP_HAS_CONTACTS CONTACT_GROUP_HAS_CONTACTS[]
     MESSAGE_SCHEDULES          MESSAGE_SCHEDULES[]
+    CONTACTS                   CONTACTS[]
 
     @@index([user_uuid])
 }
 
-model CONTACT_GROUP_HAS_CONTACTS {
-    uuid               String         @id @default(uuid()) @db.Uuid
-    user_uuid          String         @db.Uuid
-    contact_group_uuid String         @db.Uuid
-    contact_uuid       String         @db.Uuid
-    created_at         DateTime       @default(now())
-    updated_at         DateTime       @updatedAt
-    USERS              USERS          @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
-    CONTACT_GROUPS     CONTACT_GROUPS @relation(fields: [contact_group_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
-    CONTACTS           CONTACTS       @relation(fields: [contact_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+model CONTACTS {
+    uuid                       String                       @id @default(uuid()) @db.Uuid
+    user_uuid                  String                       @db.Uuid
+    contact_group_uuid         String                       @db.Uuid
+    name                       String                       @db.VarChar(50)
+    phone_number               String                       @db.VarChar(16)
+    created_at                 DateTime                     @default(now())
+    updated_at                 DateTime                     @updatedAt
+    USERS                      USERS                        @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+    CONTACT_GROUPS             CONTACT_GROUPS               @relation(fields: [contact_group_uuid], references: [uuid], onDelete: Cascade, onUpdate: Restrict)
+    MESSAGE_LOGS               MESSAGE_LOGS[]
 
-    @@index([user_uuid, contact_group_uuid, contact_uuid])
+    @@index([user_uuid])
+    @@index([contact_group_uuid])
 }
+
 
 model DEVICES {
     uuid              String              @id @default(uuid()) @db.Uuid

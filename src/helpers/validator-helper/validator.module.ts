@@ -3,14 +3,11 @@ import { validatorHelper } from './validator.service';
 import { ContactModule } from 'src/modules/contact/contact.module';
 import { ContactGroupModule } from 'src/modules/contact-group/contact-group.module';
 import { DeviceModule } from 'src/modules/device/device.module';
-import { ContactGroupHasContactModule } from 'src/modules/contact-group-has-contact/contact-group-has-contact.module';
-
 
 @Global()
 @Module({
     exports: [validatorHelper],
     providers: [validatorHelper],
-    imports: [ContactModule, ContactGroupModule, DeviceModule, ContactGroupHasContactModule],
+    imports: [ContactModule, ContactGroupModule, DeviceModule],
 })
-export class ValidatorModule {
-}
+export class ValidatorModule {}

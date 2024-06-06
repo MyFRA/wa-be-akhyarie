@@ -9,7 +9,6 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { ContactModule } from './modules/contact/contact.module';
 import { ContactGroupModule } from './modules/contact-group/contact-group.module';
-import { ContactGroupHasContactModule } from './modules/contact-group-has-contact/contact-group-has-contact.module';
 import { DeviceModule } from './modules/device/device.module';
 import { MessageModule } from './modules/message/message.module';
 import { ValidatorModule } from './helpers/validator-helper/validator.module';
@@ -19,26 +18,26 @@ import { MailModule } from './modules/mail/mail.module';
 import { StringGeneratorModule } from './helpers/string-generator/string-generator.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({
-    isGlobal: true,
-  }),
-    PrismaModule,
-    RequestContextModule,
-    FileUploadModule,
-    TokenModule,
-    GetCurrentUserModule,
-    AuthModule,
-    UserModule,
-    ContactModule,
-    ContactGroupModule,
-    ContactGroupHasContactModule,
-    DeviceModule,
-    MessageModule,
-    MessageBroadcastModule,
-    ValidatorModule,
-    MessageScheduleModule,
-    MailModule,
-    StringGeneratorModule,
-  ],
+    imports: [
+        ConfigModule.forRoot({
+            isGlobal: true,
+        }),
+        PrismaModule,
+        RequestContextModule,
+        FileUploadModule,
+        TokenModule,
+        GetCurrentUserModule,
+        AuthModule,
+        UserModule,
+        ContactModule,
+        ContactGroupModule,
+        DeviceModule,
+        MessageModule,
+        MessageBroadcastModule,
+        ValidatorModule,
+        MessageScheduleModule,
+        MailModule,
+        StringGeneratorModule,
+    ],
 })
-export class AppModule { }
+export class AppModule {}

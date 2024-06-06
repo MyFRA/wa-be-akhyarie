@@ -29,6 +29,18 @@ export class ContactGroupService {
             orderBy: [{ name: 'asc' }],
         });
 
+        const extendedContactGroups: Array<any> = [];
+
+        for (let index = 0; index < contactGroups.length; index++) {
+            extendedContactGroups[index] = contactGroups[index];
+
+            const amountContacts = await this.prisma.$queryRaw`
+            SELECT COUNT(*) as count FROM public."CONTACTS" 
+                WHERE public."CONTACTS".contact_group_uuid =CAST( ${contactGroups[index].uuid} AS UUID);`;
+
+            extendedContactGroups[index].amount_contacts = parseInt(amountContacts[0].count);
+        }
+
         return contactGroups;
     }
 
