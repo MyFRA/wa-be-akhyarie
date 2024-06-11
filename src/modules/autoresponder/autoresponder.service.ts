@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAutoresponderDto } from './dto/create-autoresponder.dto';
 import { errorHandler } from 'src/utils/error-handler/error-handler';
+import { UpdateAutoresponderDto } from './dto/update-autoresponder.dto';
 
 @Injectable()
 export class AutoresponderService {
@@ -40,6 +41,26 @@ export class AutoresponderService {
             });
 
             return createAutoresponder;
+        } catch (error) {
+            console.log(error);
+            errorHandler(400, 'Error! Please contact the administrator.');
+        }
+    }
+
+    async update(updateAutoresponderDto: UpdateAutoresponderDto, uuid: string) {
+        try {
+            const updateAutoresponder = await this.prisma.aUTO_REPLIES.update({
+                where: { uuid },
+                data: {
+                    matching: updateAutoresponderDto.matching,
+                    reply: updateAutoresponderDto.reply,
+                    reply_type: updateAutoresponderDto.reply_type,
+                    device_uuid: updateAutoresponderDto.device_uuid,
+                    text_to_reply: updateAutoresponderDto.text_to_reply,
+                },
+            });
+
+            return updateAutoresponder;
         } catch (error) {
             console.log(error);
             errorHandler(400, 'Error! Please contact the administrator.');
