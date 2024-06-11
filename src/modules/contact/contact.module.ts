@@ -5,21 +5,13 @@ import { AuthMiddleware } from 'src/middleware';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 
 @Module({
-  controllers: [ContactController],
-  providers: [ContactService],
-  imports: [NestjsFormDataModule],
-  exports: [ContactService],
+    controllers: [ContactController],
+    providers: [ContactService],
+    imports: [NestjsFormDataModule],
+    exports: [ContactService],
 })
 export class ContactModule implements NestModule {
-  public configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuthMiddleware)
-      .forRoutes(
-        { path: 'api/contacts', method: RequestMethod.GET },
-        { path: 'api/contacts', method: RequestMethod.POST },
-        { path: 'api/contacts/:uuid', method: RequestMethod.GET },
-        { path: 'api/contacts/:uuid', method: RequestMethod.PATCH },
-        { path: 'api/contacts/:uuid', method: RequestMethod.DELETE },
-      )
-  }
+    public configure(consumer: MiddlewareConsumer) {
+        consumer.apply(AuthMiddleware).forRoutes({ path: 'api/contacts', method: RequestMethod.GET }, { path: 'api/contacts', method: RequestMethod.POST }, { path: 'api/contacts/:uuid', method: RequestMethod.GET }, { path: 'api/contacts/:uuid', method: RequestMethod.PATCH }, { path: 'api/contacts/:uuid', method: RequestMethod.DELETE });
+    }
 }

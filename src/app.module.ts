@@ -16,6 +16,7 @@ import { MessageBroadcastModule } from './modules/message-broadcast/message-broa
 import { MessageScheduleModule } from './modules/message-schedule/message-schedule.module';
 import { MailModule } from './modules/mail/mail.module';
 import { StringGeneratorModule } from './helpers/string-generator/string-generator.module';
+import { AutoresponderModule } from './modules/autoresponder/autoresponder.module';
 
 @Module({
     imports: [
@@ -38,6 +39,7 @@ import { StringGeneratorModule } from './helpers/string-generator/string-generat
         MessageScheduleModule,
         MailModule,
         StringGeneratorModule,
+        AutoresponderModule,
     ],
 })
 export class AppModule {}

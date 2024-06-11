@@ -115,6 +115,7 @@ model MESSAGE_SCHEDULES {
 model AUTO_REPLIES {
     uuid          String                  @id @default(uuid()) @db.Uuid
     device_uuid   String                  @db.Uuid
+    matching      AUTO_REPLIES_matching   
     text_to_reply String                  @db.VarChar
     reply_type    AUTO_REPLIES_reply_type
     reply         String                  @db.Text
@@ -160,4 +161,9 @@ enum AUTO_REPLIES_reply_type {
     video
     audio
     document
+}
+
+enum AUTO_REPLIES_matching {
+    sentence
+    keyword
 }
